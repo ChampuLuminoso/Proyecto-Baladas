@@ -29510,9 +29510,32 @@
   "fecha": "2026-11-08T20:24:43"
  },
  "c520": {
-  "cand": [],
+  "cand": [
+   {
+    "id": "5Tgk5gnbiok",
+    "titulo": "Quiet Riot - Cum On Feel The Noize (link de Jorge)",
+    "canal": "",
+    "dur": 0,
+    "puntos": 99,
+    "malas": [],
+    "buenas": [
+     "elegido por Jorge"
+    ]
+   },
+   {
+    "id": "ZxgMGk9JPVA",
+    "titulo": "Quiet Riot - Cum On Feel The Noize",
+    "canal": "",
+    "dur": 0,
+    "puntos": -50,
+    "malas": [
+     "restricción de edad: no se puede poner en otras páginas"
+    ],
+    "buenas": []
+   }
+  ],
   "i": 0,
-  "estado": "ninguna",
+  "estado": "ok",
   "fecha": "2026-11-08T21:29:47",
   "reintentada": true
  },
