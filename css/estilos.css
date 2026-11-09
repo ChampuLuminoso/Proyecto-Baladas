@@ -1,0 +1,444 @@
+/* ═══════════════════════════════════════════════════════════
+   DJ Jorge Montes · Estilo "radiola de los 70"
+   Colores cálidos, letra grande, botones grandes, contraste alto.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --vino: #5c1a24;
+  --vino-oscuro: #350d14;
+  --vino-medio: #7a2531;
+  --dorado: #c9a24a;
+  --dorado-claro: #ecd38f;
+  --crema: #f8eedb;
+  --papel: #efe0c0;
+  --naranja: #a8481f;      /* naranja quemado (texto blanco encima: 5,6:1) */
+  --tinta: #2b1810;        /* texto principal sobre crema (15:1) */
+  --tinta-suave: #5a3e30;  /* texto secundario sobre crema (8:1) */
+
+  --letra: 'Atkinson Hyperlegible', system-ui, sans-serif; /* hecha para baja visión */
+  --letra-titulo: 'DM Serif Display', Georgia, serif;
+  --letra-logo: 'Yellowtail', 'Brush Script MT', cursive;
+
+  --radio: 18px;
+  --sombra: 0 10px 30px rgb(53 13 20 / .25);
+  --dur: .35s;
+  --barra-pulgar: 96px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { font-size: 112.5%; } /* 18 px de base: más grande que lo normal (16) */
+@media (min-width: 768px) { html { font-size: 118.75%; } } /* 19 px */
+
+body {
+  margin: 0;
+  font-family: var(--letra);
+  color: var(--tinta);
+  line-height: 1.45;
+  background-color: var(--papel);
+  /* Textura de papel: ruido muy suave dibujado con SVG, sin imágenes externas */
+  background-image:
+    radial-gradient(ellipse at top, rgb(255 248 230 / .9), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  padding-bottom: calc(var(--barra-pulgar) + env(safe-area-inset-bottom));
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+:focus-visible { outline: 4px solid var(--naranja); outline-offset: 3px; border-radius: 10px; }
+
+/* ─────────── Cabecera ─────────── */
+.cabecera {
+  background: linear-gradient(180deg, var(--vino-oscuro), var(--vino));
+  border-bottom: 4px double var(--dorado);
+  color: var(--crema);
+  padding: .5rem 1rem .6rem;
+  text-align: center;
+}
+.cabecera__marca { display: flex; align-items: baseline; justify-content: center; gap: .8rem; flex-wrap: wrap; }
+.logo {
+  font-family: var(--letra-logo);
+  font-size: 2.1rem;
+  line-height: 1.1;
+  color: var(--dorado-claro);
+  text-shadow: 0 2px 0 var(--vino-oscuro), 0 0 18px rgb(236 211 143 / .25);
+  margin: 0;
+  font-weight: 400;
+}
+.cabecera__sub { font-family: var(--letra-titulo); letter-spacing: .08em; font-size: .95rem; color: var(--papel); }
+.aviso-vista-previa {
+  margin: .5rem auto 0; max-width: 46rem; font-size: .9rem;
+  background: var(--dorado-claro); color: var(--tinta); border-radius: 10px; padding: .4rem .8rem;
+}
+
+/* ─────────── Distribución (celular primero) ─────────── */
+.radiola {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1500px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "tocadiscos" "cancionero" "cola";
+}
+.tocadiscos { grid-area: tocadiscos; }
+.cancionero { grid-area: cancionero; }
+.cola { grid-area: cola; }
+
+/* Tablet: reproductor a la izquierda (fijo), lista a la derecha */
+@media (min-width: 768px) {
+  body { padding-bottom: 1rem; }
+  .barra-pulgar { display: none !important; }
+  .radiola {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "tocadiscos cancionero" "cola cancionero";
+    align-items: start;
+  }
+  .tocadiscos { position: sticky; top: 1rem; }
+}
+
+/* Computador: lista | reproductor | cola */
+@media (min-width: 1200px) {
+  .radiola {
+    grid-template-columns: minmax(300px, 1fr) minmax(0, 1.5fr) minmax(240px, .8fr);
+    grid-template-areas: "cancionero tocadiscos cola";
+  }
+  .cola { position: sticky; top: 1rem; }
+}
+
+/* ─────────── Tocadiscos (el mueble) ─────────── */
+.tocadiscos {
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / .06), transparent 40%),
+    linear-gradient(180deg, var(--vino-medio), var(--vino) 30%, var(--vino-oscuro));
+  color: var(--crema);
+  border-radius: var(--radio);
+  border: 3px solid var(--dorado);
+  box-shadow: var(--sombra), inset 0 0 0 6px var(--vino-oscuro), inset 0 0 0 8px rgb(201 162 74 / .45);
+  padding: 1.1rem 1rem 1.2rem;
+  display: grid;
+  gap: .9rem;
+}
+
+.escenario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border-radius: 14px;
+  background: radial-gradient(ellipse at center, #2a0a10, #1b0609);
+  box-shadow: inset 0 4px 18px rgb(0 0 0 / .6);
+  padding: .75rem;
+  min-height: 220px;
+}
+.escenario__disco { position: relative; flex: 0 1 300px; max-width: 300px; }
+.escenario__video { position: relative; flex: 1 1 auto; }
+
+/* Vista "video": el video ocupa todo el escenario */
+.escenario[data-vista="video"] .escenario__disco { display: none; }
+.escenario[data-vista="video"] .escenario__video { width: 100%; aspect-ratio: 16 / 9; }
+
+/* Vista "solo música": el disco es el protagonista y el video queda
+   pequeño, pero NUNCA menos de 200×200 (regla de YouTube). */
+.escenario[data-vista="musica"] .escenario__video { flex: 0 0 200px; width: 200px; height: 200px; }
+.escenario[data-vista="musica"] .escenario__disco { flex: 1 1 120px; min-width: 110px; }
+
+#yt, .escenario__video iframe { width: 100%; height: 100%; border: 0; border-radius: 10px; display: block; background: #000; }
+.video-falso {
+  width: 100%; height: 100%; display: grid; place-content: center; text-align: center;
+  background: repeating-linear-gradient(45deg, #241015 0 12px, #2c1319 12px 24px); border-radius: 10px;
+  color: var(--papel); font-size: 2rem;
+}
+.video-falso small { font-size: .8rem; }
+.pista-iphone {
+  position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%);
+  margin: 0; background: var(--dorado-claro); color: var(--tinta); padding: .35rem .8rem; border-radius: 99px;
+  font-size: .9rem; white-space: nowrap; pointer-events: none;
+}
+
+/* ─────────── El disco de vinilo ─────────── */
+.disco {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 33%, rgb(255 255 255 / .05) 33.5%, transparent 34.5%),
+    repeating-radial-gradient(circle, #121212 0 1.5px, #1d1d1d 1.5px 3px);
+  box-shadow: 0 8px 22px rgb(0 0 0 / .55), inset 0 0 0 3px #0b0b0b;
+  animation: girar 3.6s linear infinite;
+  animation-play-state: paused;
+}
+/* Brillo: no gira (como la luz real sobre un disco) */
+.escenario__disco::after, .mini-disco::after, .disco--bienvenida::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 20deg, transparent 0 8%, rgb(255 255 255 / .16) 12%, transparent 18% 50%, rgb(255 255 255 / .12) 62%, transparent 68%);
+}
+.disco__etiqueta {
+  position: absolute; inset: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--dorado-claro) 0 5%, var(--vino-oscuro) 5.5% 8%, var(--vino-medio) 8.5% 70%, var(--dorado) 71% 74%, var(--vino) 75%);
+  display: grid; place-items: center;
+}
+.disco__etiqueta span {
+  font-family: var(--letra-titulo); color: var(--dorado-claro);
+  font-size: clamp(.8rem, 4.5vw, 1.6rem); transform: translateY(-62%);
+}
+.disco--girando { animation-play-state: running; }
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* Brazo del tocadiscos: se apoya sobre el disco cuando suena */
+.brazo {
+  position: absolute; top: -4%; right: -2%; width: 14%; height: 62%;
+  transform-origin: 50% 8%; transform: rotate(-28deg);
+  transition: transform 1.2s cubic-bezier(.3, .7, .3, 1);
+}
+.brazo::before { /* base */
+  content: ""; position: absolute; top: 0; left: 50%; width: 100%; aspect-ratio: 1; transform: translateX(-50%);
+  border-radius: 50%; background: radial-gradient(circle, var(--dorado-claro), var(--dorado) 60%, #8a6a24);
+}
+.brazo::after { /* varilla y cápsula */
+  content: ""; position: absolute; top: 12%; left: calc(50% - 3px); width: 6px; height: 88%;
+  background: linear-gradient(90deg, #8a6a24, var(--dorado-claro), #8a6a24); border-radius: 3px;
+  box-shadow: 0 6px 0 4px var(--dorado);
+}
+body.sonando .brazo { transform: rotate(4deg); }
+
+/* Mini disco junto al título (en vista video) */
+.mini-disco { position: relative; width: 58px; flex: 0 0 58px; }
+.escenario[data-vista="musica"] ~ .ahora .mini-disco { display: none; }
+
+/* ─────────── Ahora suena ─────────── */
+.ahora { display: flex; align-items: center; gap: .9rem; min-height: 4.5rem; }
+.ahora__rotulo { margin: 0; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dorado-claro); }
+.ahora__titulo { margin: .1rem 0 0; font-family: var(--letra-titulo); font-weight: 400; font-size: 1.7rem; line-height: 1.15; color: #fff; }
+.ahora__artista { margin: .15rem 0 0; font-size: 1.1rem; color: var(--papel); }
+
+/* ─────────── Barras (progreso y volumen) ─────────── */
+.progreso { display: flex; align-items: center; gap: .6rem; }
+.progreso__tiempo { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: center; font-size: .95rem; color: var(--papel); }
+
+input[type="range"] {
+  --avance: 0%;
+  -webkit-appearance: none; appearance: none;
+  flex: 1; height: 48px; background: transparent; margin: 0; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 12px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--dorado) var(--avance), rgb(248 238 219 / .25) var(--avance));
+}
+input[type="range"]::-moz-range-track { height: 12px; border-radius: 99px; background: rgb(248 238 219 / .25); }
+input[type="range"]::-moz-range-progress { height: 12px; border-radius: 99px; background: var(--dorado); }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 32px; height: 32px; margin-top: -10px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff6dc, var(--dorado-claro) 40%, var(--dorado));
+  border: 3px solid var(--vino-oscuro); box-shadow: 0 2px 6px rgb(0 0 0 / .4);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff6dc, var(--dorado-claro) 40%, var(--dorado));
+  border: 3px solid var(--vino-oscuro);
+}
+
+.volumen { display: flex; align-items: center; gap: .6rem; }
+.volumen__barra { flex: 1; display: flex; align-items: center; gap: .4rem; }
+.volumen__icono { font-size: 1.3rem; }
+
+/* ─────────── Botones ─────────── */
+.boton {
+  border: 0; border-radius: 14px; min-height: 48px; min-width: 48px; padding: .6rem 1.1rem;
+  font-weight: 700; transition: transform var(--dur), box-shadow var(--dur), background-color var(--dur);
+}
+.boton:active { transform: scale(.96); }
+
+.boton--redondo {
+  width: 64px; height: 64px; border-radius: 50%; padding: 0; font-size: 1.6rem;
+  background: radial-gradient(circle at 35% 30%, #fff7e2, var(--crema) 45%, var(--papel));
+  color: var(--vino-oscuro);
+  box-shadow: 0 4px 0 #b99a62, 0 6px 14px rgb(0 0 0 / .35);
+  display: inline-grid; place-items: center;
+}
+.boton--redondo:active { box-shadow: 0 1px 0 #b99a62, 0 2px 6px rgb(0 0 0 / .35); transform: translateY(3px); }
+.boton--play { width: 84px; height: 84px; font-size: 2.1rem;
+  background: radial-gradient(circle at 35% 30%, #fff2c8, var(--dorado-claro) 45%, var(--dorado)); }
+.boton--chico { width: 52px; height: 52px; font-size: 1.6rem; }
+
+.controles { display: flex; justify-content: center; align-items: center; gap: 1.4rem; }
+
+.boton--sorpresa {
+  background: linear-gradient(180deg, #c45a2a, var(--naranja) 60%, #8a3a17);
+  color: #fff; font-size: 1.35rem; letter-spacing: .02em;
+  border: 2px solid var(--dorado-claro);
+  box-shadow: 0 5px 0 #6b2b10, 0 8px 18px rgb(0 0 0 / .35);
+  text-shadow: 0 1px 1px rgb(0 0 0 / .4);
+}
+.boton--sorpresa:active { box-shadow: 0 1px 0 #6b2b10; transform: translateY(4px); }
+.boton--grande { width: 100%; min-height: 64px; font-size: 1.5rem; }
+.boton--enorme { width: 100%; min-height: 72px; font-size: 1.6rem; }
+.boton--crema { background: var(--crema); color: var(--vino-oscuro); border: 2px solid var(--dorado); box-shadow: 0 5px 0 #b99a62; }
+.boton--enlace { background: none; color: var(--dorado-claro); text-decoration: underline; justify-self: center; }
+
+body.modo-sorpresa #btn-sorpresa { animation: latido 2.4s ease-in-out infinite; }
+@keyframes latido { 50% { box-shadow: 0 5px 0 #6b2b10, 0 0 0 6px rgb(236 211 143 / .35), 0 8px 18px rgb(0 0 0 / .35); } }
+
+/* Interruptor Ver video / Solo música */
+.interruptor { display: grid; grid-template-columns: 1fr 1fr; background: var(--vino-oscuro); border-radius: 99px; padding: 4px; border: 2px solid rgb(201 162 74 / .6); }
+.interruptor__op { border: 0; background: transparent; color: var(--papel); border-radius: 99px; min-height: 52px; font-size: 1.05rem; font-weight: 700; transition: background-color var(--dur), color var(--dur); }
+.interruptor__op[aria-pressed="true"] { background: var(--crema); color: var(--vino-oscuro); }
+
+/* ─────────── Cancionero ─────────── */
+.cancionero, .cola {
+  background: var(--crema);
+  border-radius: var(--radio);
+  border: 2px solid rgb(201 162 74 / .7);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+}
+.titulo-seccion { font-family: var(--letra-titulo); font-weight: 400; font-size: 1.6rem; color: var(--vino); margin: 0 0 .6rem; }
+
+.buscador {
+  display: flex; align-items: center; gap: .5rem; background: #fff; border: 2px solid var(--tinta-suave);
+  border-radius: 14px; padding: 0 .8rem; font-size: 1.2rem;
+}
+.buscador:focus-within { outline: 4px solid var(--naranja); outline-offset: 2px; }
+.buscador input { flex: 1; border: 0; background: transparent; font: inherit; color: var(--tinta); min-height: 56px; outline: none; min-width: 0; }
+
+.decadas { display: grid; grid-template-columns: repeat(5, 1fr); gap: .4rem; margin: .8rem 0; }
+.idiomas { display: grid; grid-template-columns: .8fr 1fr 1fr; gap: .4rem; margin-top: .8rem; }
+.idiomas + .decadas[hidden] + .letras { margin-top: .8rem; }
+.decada, .idioma {
+  min-height: 52px; border-radius: 12px; border: 2px solid var(--vino); background: transparent;
+  color: var(--vino); font-weight: 700; font-size: 1.05rem; padding: 0;
+}
+.idioma { font-size: 1rem; padding: 0 .3rem; }
+.decada[aria-pressed="true"], .idioma[aria-pressed="true"] { background: var(--vino); color: var(--crema); }
+
+/* Índice de letras: en celular, una fila que se desliza de lado */
+.letras {
+  display: flex; gap: .3rem; overflow-x: auto; padding: .2rem .1rem .5rem; margin: 0 -.2rem;
+  position: sticky; top: 0; z-index: 2; background: var(--crema);
+  scrollbar-width: thin;
+}
+.letras button {
+  flex: 0 0 48px; height: 48px; border-radius: 10px; border: 0; background: var(--papel);
+  font-family: var(--letra-titulo); font-size: 1.25rem; color: var(--vino);
+}
+.letras button:disabled { opacity: .3; cursor: default; }
+@media (min-width: 1200px) {
+  .letras { flex-wrap: wrap; overflow: visible; position: static; }
+  .letras button { flex-basis: 44px; height: 48px; }
+}
+
+.conteo { margin: .3rem 0 .5rem; color: var(--tinta-suave); font-size: .95rem; }
+
+.lista { list-style: none; margin: 0; padding: 0; }
+@media (min-width: 768px) {
+  .lista { max-height: calc(100vh - 22rem); overflow-y: auto; padding-right: .3rem; scrollbar-width: thin; }
+}
+.lista__letra {
+  font-family: var(--letra-titulo); color: var(--naranja); font-size: 1.5rem;
+  border-bottom: 2px solid var(--dorado); margin: .8rem 0 .2rem; padding-left: .3rem;
+}
+.lista [data-letra-inicio] { scroll-margin-top: 4.5rem; }
+.cancion {
+  display: flex; align-items: center; gap: .4rem;
+  border-bottom: 1px dashed rgb(90 62 48 / .3);
+}
+.cancion__boton {
+  flex: 1; text-align: left; border: 0; background: transparent; padding: .7rem .5rem; min-height: 64px;
+  display: grid; gap: .1rem; border-radius: 12px; transition: background-color var(--dur);
+}
+.cancion__boton:hover { background: rgb(201 162 74 / .18); }
+.cancion__titulo { font-weight: 700; font-size: 1.15rem; color: var(--tinta); }
+.cancion__detalle { font-size: 1rem; color: var(--tinta-suave); }
+.cancion--actual .cancion__boton { background: var(--vino); }
+.cancion--actual .cancion__titulo { color: #fff; }
+.cancion--actual .cancion__detalle { color: var(--dorado-claro); }
+.cancion--actual .cancion__titulo::before { content: "♪ "; color: var(--dorado-claro); }
+.cancion--apagada .cancion__boton { opacity: .55; cursor: not-allowed; }
+
+.sello { font-size: .8rem; background: var(--papel); color: var(--tinta-suave); border-radius: 99px; padding: .15rem .55rem; white-space: nowrap; }
+.sello--falla { background: #fde2d6; color: #7a2a0c; }
+.sello--verificar { background: transparent; color: var(--tinta-suave); border: 1px solid currentColor; }
+
+.pie-lista { margin: .8rem 0 0; font-size: .9rem; color: var(--tinta-suave); }
+.pie-lista input { width: 22px; height: 22px; vertical-align: middle; }
+
+/* ─────────── Cola ─────────── */
+.cola__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.cola__lista li { display: flex; gap: .7rem; align-items: center; padding: .5rem; border-radius: 12px; background: rgb(239 224 192 / .6); }
+.cola__lista strong { display: block; font-size: 1.05rem; }
+.cola__lista small { color: var(--tinta-suave); font-size: .95rem; }
+.cola__num {
+  flex: 0 0 2.2rem; height: 2.2rem; border-radius: 50%; display: grid; place-items: center;
+  background: var(--vino); color: var(--dorado-claro); font-family: var(--letra-titulo); font-size: 1.1rem;
+}
+.cola__vacia { color: var(--tinta-suave); }
+
+/* ─────────── Barra del pulgar (solo celular) ─────────── */
+.barra-pulgar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  display: flex; justify-content: space-around; align-items: center;
+  height: calc(var(--barra-pulgar) + env(safe-area-inset-bottom));
+  padding: 0 .8rem env(safe-area-inset-bottom);
+  background: linear-gradient(180deg, var(--vino), var(--vino-oscuro));
+  border-top: 3px double var(--dorado);
+  box-shadow: 0 -6px 20px rgb(0 0 0 / .3);
+}
+.barra-pulgar .boton--sorpresa { width: 76px; height: 64px; border-radius: 18px; font-size: 1.9rem; padding: 0; }
+@media (max-width: 767px) {
+  .tocadiscos .controles { display: none; } /* en celular están en la barra de abajo */
+  .ahora__titulo { font-size: 1.45rem; }
+  .escenario { min-height: 0; }
+}
+
+/* ─────────── Avisos ─────────── */
+.aviso {
+  position: fixed; left: 50%; bottom: calc(var(--barra-pulgar) + 1rem + env(safe-area-inset-bottom)); z-index: 30;
+  transform: translate(-50%, 1rem); opacity: 0; pointer-events: none;
+  background: var(--tinta); color: var(--crema); padding: .8rem 1.2rem; border-radius: 14px;
+  border: 2px solid var(--dorado); font-size: 1.05rem; width: max-content; max-width: min(92vw, 34rem); text-align: center;
+  transition: opacity var(--dur), transform var(--dur);
+}
+.aviso--visible { opacity: 1; transform: translate(-50%, 0); }
+@media (min-width: 768px) { .aviso { bottom: auto; top: 1.2rem; transform: translate(-50%, -1rem); } .aviso--visible { transform: translate(-50%, 0); } }
+
+/* ─────────── Bienvenida ─────────── */
+.bienvenida {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 1.2rem;
+  background: radial-gradient(ellipse at top, var(--vino-medio), var(--vino-oscuro) 70%);
+  transition: opacity .6s, visibility .6s;
+}
+.bienvenida--cerrada { opacity: 0; visibility: hidden; }
+.bienvenida__tarjeta { width: min(100%, 26rem); display: grid; gap: 1rem; text-align: center; justify-items: center; }
+.bienvenida .logo { font-size: 3rem; }
+.bienvenida__sub { margin: -.6rem 0 .4rem; color: var(--papel); font-family: var(--letra-titulo); letter-spacing: .06em; font-size: 1.1rem; }
+.bienvenida__ayuda { color: var(--papel); margin: 0; font-size: 1rem; }
+.disco--bienvenida { width: min(55vw, 220px); animation-play-state: running; animation-duration: 6s; }
+.disco--bienvenida .disco__etiqueta span { font-size: 1.6rem; }
+
+/* ─────────── Movimiento reducido ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ─────────── Ajustes tras probar a 360 / 768 / 1280 px ─────────── */
+.tocadiscos > *, .escenario > * { min-width: 0; }
+
+@media (max-width: 767px) {
+  .radiola { padding: .6rem; gap: .8rem; }
+  .tocadiscos { padding: .8rem .7rem 1rem; }
+  .escenario { padding: .5rem; gap: .5rem; }
+  /* Solo música en celular: el video queda en 200×200 (mínimo de YouTube) y el disco toma el resto */
+  .escenario[data-vista="musica"] .escenario__disco { flex: 1 1 0; min-width: 0; }
+  .progreso { gap: .3rem; }
+  .progreso__tiempo { min-width: 2.6em; font-size: .85rem; }
+}
+
+/* Tablet y computador: el video no crece de más, para que "Sorpréndeme" se vea sin bajar */
+@media (min-width: 768px) {
+  .tocadiscos { gap: .75rem; }
+  .escenario[data-vista="video"] .escenario__video { flex: 0 1 400px; width: min(100%, 400px); }
+}

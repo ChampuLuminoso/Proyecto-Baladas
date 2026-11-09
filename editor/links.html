@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Buscador de links · DJ Jorge Montes</title>
+  <link rel="icon" href="../img/vinilo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=DM+Serif+Display&family=Yellowtail&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="stylesheet" href="links.css">
+</head>
+<body class="taller">
+  <header class="cabecera">
+    <div class="cabecera__marca">
+      <span class="logo">DJ Jorge Montes</span>
+      <span class="cabecera__sub">Buscador de links · solo para Jorge</span>
+    </div>
+  </header>
+
+  <main class="taller__main">
+    <!-- 1. Clave -->
+    <section class="tarjeta" aria-labelledby="t-clave">
+      <h2 id="t-clave" class="titulo-seccion">1 · Clave de YouTube</h2>
+      <p class="ayuda">La clave se guarda <strong>solo en este navegador</strong>. Nunca la pegues en el código ni la subas a GitHub.
+        Los pasos para sacarla están en <code>LEEME.md</code>.</p>
+      <form id="form-clave" class="fila">
+        <label class="campo">
+          <span class="sr">Clave de la API de YouTube</span>
+          <input id="clave" type="password" autocomplete="off" spellcheck="false" placeholder="Pegue aquí la clave (empieza por AIza…)">
+        </label>
+        <button class="boton boton--crema" type="submit">Guardar clave</button>
+        <button class="boton boton--enlace-oscuro" type="button" id="btn-olvidar">Borrar clave</button>
+      </form>
+      <p id="estado-clave" class="ayuda"></p>
+    </section>
+
+    <!-- 2. Buscar -->
+    <section class="tarjeta" aria-labelledby="t-buscar">
+      <h2 id="t-buscar" class="titulo-seccion">2 · Buscar en YouTube</h2>
+      <div class="resumen" id="resumen" aria-live="polite"></div>
+      <div class="fila">
+        <label class="campo campo--corto">Cuántas canciones
+          <input id="cuantas" type="number" min="1" max="100" value="95">
+        </label>
+        <button id="btn-buscar" class="boton boton--sorpresa">🔎 Buscar las siguientes</button>
+        <button id="btn-parar" class="boton boton--crema" hidden>⏸ Parar</button>
+      </div>
+      <progress id="progreso" max="100" value="0" hidden></progress>
+      <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
+      <p class="ayuda">Busca <em>«artista + canción»</em>, solo videos que se pueden poner en otras páginas y que se ven en Colombia.
+        YouTube da <strong>100 búsquedas al día</strong>; el cupo se renueva a las <strong>3 a. m.</strong> (hora de Colombia).
+        Lo encontrado queda guardado aunque cierre la página.</p>
+    </section>
+
+    <!-- 3. Revisar -->
+    <section class="tarjeta" aria-labelledby="t-revisar">
+      <h2 id="t-revisar" class="titulo-seccion">3 · Revisar lo encontrado</h2>
+      <div class="filtros" role="group" aria-label="Mostrar">
+        <button class="decada" data-ver="dudosa" aria-pressed="true">Dudosas</button>
+        <button class="decada" data-ver="probable" aria-pressed="false">Probables</button>
+        <button class="decada" data-ver="ok" aria-pressed="false">Aprobadas</button>
+        <button class="decada" data-ver="ninguna" aria-pressed="false">Sin link</button>
+        <button class="decada" data-ver="todas" aria-pressed="false">Todas</button>
+      </div>
+      <label class="buscador buscador--taller">
+        <span aria-hidden="true">🔍</span>
+        <input id="filtro-texto" type="search" placeholder="Buscar canción o artista">
+      </label>
+      <p id="conteo-revision" class="conteo"></p>
+      <ol id="revision" class="revision"></ol>
+    </section>
+
+    <!-- 4. Guardar -->
+    <section class="tarjeta" aria-labelledby="t-guardar">
+      <h2 id="t-guardar" class="titulo-seccion">4 · Guardar para todos</h2>
+      <p class="ayuda">Los links ya suenan en <strong>esta</strong> computadora. Para que suenen en el celular de Jorge Montes:
+        descargue el archivo, reemplace <code>datos/canciones.json</code> en GitHub y Vercel publica solo en un minuto.</p>
+      <div class="fila">
+        <button id="btn-descargar" class="boton boton--sorpresa">⬇ Descargar canciones.json</button>
+        <button id="btn-copiar" class="boton boton--crema">📋 Copiar el texto</button>
+        <a class="boton boton--crema" href="../">🎵 Ir a la radiola</a>
+      </div>
+      <p id="mensaje-guardar" class="mensaje" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <!-- Vista previa del video -->
+  <dialog id="previa" class="previa" aria-labelledby="previa-titulo">
+    <h2 id="previa-titulo" class="titulo-seccion">Escuchar</h2>
+    <div class="previa__video"><iframe id="previa-iframe" title="Vista previa del video" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
+    <form method="dialog"><button class="boton boton--crema">Cerrar</button></form>
+  </dialog>
+
+  <script type="module" src="links.js"></script>
+</body>
+</html>

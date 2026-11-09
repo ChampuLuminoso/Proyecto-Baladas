@@ -1,0 +1,67 @@
+/* Estilos extra del Buscador de links (reusa los colores de la radiola). */
+body.taller { padding-bottom: 2rem; }
+.taller__main { max-width: 980px; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
+.tarjeta {
+  background: var(--crema); border: 2px solid rgb(201 162 74 / .7); border-radius: var(--radio);
+  box-shadow: var(--sombra); padding: 1rem 1.1rem;
+}
+.ayuda { color: var(--tinta-suave); font-size: .95rem; margin: .5rem 0; }
+.ayuda code, .tarjeta code { background: var(--papel); padding: .05rem .35rem; border-radius: 6px; }
+.fila { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; margin: .6rem 0; }
+.campo { flex: 1 1 260px; display: grid; gap: .25rem; font-weight: 700; color: var(--tinta-suave); font-size: .95rem; }
+.campo--corto { flex: 0 0 9rem; }
+.campo input {
+  font: inherit; font-weight: 400; color: var(--tinta); min-height: 52px; padding: 0 .8rem;
+  border: 2px solid var(--tinta-suave); border-radius: 12px; background: #fff;
+}
+.boton--enlace-oscuro { background: none; color: var(--vino); text-decoration: underline; }
+a.boton { display: inline-flex; align-items: center; text-decoration: none; }
+.tarjeta .boton--sorpresa { font-size: 1.1rem; }
+
+.resumen { display: flex; flex-wrap: wrap; gap: .5rem; }
+.resumen span { background: var(--papel); border-radius: 99px; padding: .3rem .8rem; font-size: .95rem; }
+.resumen strong { color: var(--vino); }
+progress { width: 100%; height: 18px; accent-color: var(--naranja); }
+.mensaje { font-weight: 700; color: var(--vino); min-height: 1.4em; margin: .4rem 0; }
+.mensaje--error { color: #8a2a0c; }
+
+.filtros { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .6rem; }
+.filtros .decada { padding: 0 .9rem; }
+.buscador--taller { margin-bottom: .4rem; }
+
+.revision { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
+.fila-rev {
+  display: grid; grid-template-columns: 1fr; gap: .6rem; padding: .8rem; border-radius: 14px;
+  background: #fffaf0; border: 1px solid rgb(90 62 48 / .2);
+}
+.fila-rev[data-estado="ok"] { border-left: 6px solid #3c7a3c; }
+.fila-rev[data-estado="probable"] { border-left: 6px solid var(--dorado); }
+.fila-rev[data-estado="dudosa"] { border-left: 6px solid var(--naranja); }
+.fila-rev[data-estado="ninguna"] { border-left: 6px solid #999; }
+.fila-rev__cancion strong { font-size: 1.1rem; }
+.fila-rev__cancion small { display: block; color: var(--tinta-suave); }
+.candidata { display: grid; grid-template-columns: 120px 1fr; gap: .7rem; align-items: center; }
+.candidata img { width: 120px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; background: #222; }
+.candidata__titulo { font-weight: 700; line-height: 1.25; }
+.candidata__info { font-size: .9rem; color: var(--tinta-suave); }
+.marcas { display: flex; gap: .3rem; flex-wrap: wrap; margin-top: .2rem; }
+.marca { font-size: .8rem; border-radius: 99px; padding: .05rem .5rem; background: var(--papel); }
+.marca--mala { background: #fde2d6; color: #7a2a0c; }
+.acciones { display: flex; flex-wrap: wrap; gap: .4rem; }
+.acciones .boton { min-height: 48px; padding: .4rem .8rem; font-size: .95rem; }
+.boton--ok { background: #3c7a3c; color: #fff; }
+.manual { display: flex; gap: .4rem; flex-wrap: wrap; }
+.manual input { flex: 1 1 200px; min-width: 0; width: 100%; font: inherit; min-height: 48px; padding: 0 .7rem; border: 2px solid var(--tinta-suave); border-radius: 10px; }
+@media (min-width: 760px) {
+  .fila-rev { grid-template-columns: 220px 1fr; }
+  .fila-rev .acciones, .fila-rev .manual { grid-column: 2; }
+}
+
+.previa { border: 3px solid var(--dorado); border-radius: var(--radio); background: var(--crema); width: min(94vw, 720px); padding: 1rem; }
+.previa::backdrop { background: rgb(53 13 20 / .7); }
+.previa__video { aspect-ratio: 16 / 9; margin-bottom: .8rem; }
+.previa__video iframe { width: 100%; height: 100%; border: 0; border-radius: 10px; }
+.taller__main > *, .campo, .campo input, .fila-rev > * { min-width: 0; }
+.campo input { width: 100%; }
+.candidata__titulo { overflow-wrap: anywhere; }
+@media (max-width: 480px) { .candidata { grid-template-columns: 96px 1fr; } .candidata img { width: 96px; } }
