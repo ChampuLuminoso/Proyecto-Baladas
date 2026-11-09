@@ -250,7 +250,7 @@ function conectarControles() {
     (cancionero.marcadas ??= new Set()).add(c.id);
     cancionero.dibujar();
     avisar(r.compartida ? '🚩 ¡Gracias! Quedó reportada para revisarla.'
-      : '🚩 Quedó guardada en este equipo; se enviará cuando haya conexión.', 6000);
+      : `🚩 Quedó guardada en este equipo; se enviará después. Motivo: ${r.detalle || 'sin conexión'}.`, 9000);
   });
 
   $('btn-vol-menos').addEventListener('click', () => aplicarVolumen(volumen - 10));

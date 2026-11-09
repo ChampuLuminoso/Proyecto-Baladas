@@ -14,16 +14,30 @@ export const MOTIVOS = {
   'bloqueada': '⛔ YouTube no la deja tocar aquí',
 };
 
+// Explica en palabras simples por qué no se pudo enviar (para saber qué arreglar).
+function explicar(status, j) {
+  if (status === 404 || status === 405 || status === 501) return 'esta página no tiene la base de datos (¿abrió el link de Vercel?)';
+  if (status === 503) return j?.mensaje || 'falta conectar la base de datos en Vercel';
+  if (status === 401 || status === 403) return 'Vercel pidió iniciar sesión (protección del proyecto)';
+  return `${j?.mensaje || 'error'} (código ${status})`;
+}
+
 export async function enviarMarca(datos) {
+  let detalle = '';
   try {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) });
     if (r.ok) return { compartida: true };
-    if (r.status === 400) return { error: true };
-  } catch { /* sin conexión */ }
+    const j = await r.json().catch(() => null);
+    if (r.status === 400) return { error: true, detalle: j?.mensaje || 'datos incompletos' };
+    detalle = explicar(r.status, j);
+  } catch (e) {
+    detalle = navigator.onLine === false ? 'no hay internet' : 'el navegador bloqueó el envío (¿un bloqueador de anuncios?)';
+  }
+  console.warn('🚩 No se pudo enviar el reporte:', detalle, 'a', API);
   const pend = memoria.leer('marcasPendientes', []);
   pend.push({ ...datos, fecha: new Date().toISOString() });
   memoria.guardar('marcasPendientes', pend.slice(-300));
-  return { compartida: false };
+  return { compartida: false, detalle };
 }
 
 // Envía lo que quedó guardado en este equipo.
