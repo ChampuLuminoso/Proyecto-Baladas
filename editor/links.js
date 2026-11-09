@@ -170,7 +170,8 @@ function puntuar(c, v, det) {
   if (/ - topic$/.test(canal)) p += 2;          // canal oficial de audio
   if (/vevo|oficial|official/.test(canal + ' ' + titulo)) p += 1;
   if (/en vivo|live/.test(titulo)) { p -= 1; malas.push('en vivo'); }
-  for (const [re, nombre] of MALAS) if (re.test(titulo)) { p -= 5; malas.push(nombre); }
+  const nombreCancion = normalizar(c.titulo);
+  for (const [re, nombre] of MALAS) if (re.test(titulo) && !re.test(nombreCancion)) { p -= 5; malas.push(nombre); }
 
   if (det) {
     const seg = segundos(det.contentDetails?.duration);

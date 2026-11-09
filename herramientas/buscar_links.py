@@ -122,8 +122,9 @@ def puntuar(c, v):
     if re.search(r'en vivo|\blive\b', titulo):
         p -= 1
         malas.append('en vivo')
+    nombre_cancion = normalizar(c['titulo'])
     for patron, nombre in MALAS:
-        if re.search(patron, titulo):
+        if re.search(patron, titulo) and not re.search(patron, nombre_cancion):
             p -= 5
             malas.append(nombre)
     if v['dur'] and (v['dur'] < 90 or v['dur'] > 12 * 60):
@@ -132,9 +133,19 @@ def puntuar(c, v):
     return {**v, 'puntos': p, 'malas': malas}
 
 
-def procesar(c):
-    candidatas = sorted((puntuar(c, v) for v in buscar(f"{c['artista']} {c['titulo']}")),
-                        key=lambda v: -v['puntos'])
+def procesar(c, previas=None, consultas=None):
+    vistos, crudas = set(), []
+    for q in consultas or [f"{c['artista']} {c['titulo']}"]:
+        for v in buscar(q):
+            if v['id'] not in vistos:
+                vistos.add(v['id'])
+                crudas.append(v)
+        time.sleep(0.5)
+    for v in previas or []:  # lo que ya se había encontrado antes también cuenta
+        if v['id'] not in vistos and v.get('incrustable') is not False:
+            vistos.add(v['id'])
+            crudas.append({k: v[k] for k in ('id', 'titulo', 'canal', 'dur')})
+    candidatas = sorted((puntuar(c, v) for v in crudas), key=lambda v: -v['puntos'])
     # Revisamos en orden hasta encontrar una que se deje incrustar.
     for v in candidatas:
         ok, motivo = se_puede_incrustar(v['id'])
@@ -175,7 +186,11 @@ def aplicar(datos, resultados):
     puestas = 0
     for c in datos['canciones']:
         r = resultados.get(c['id'])
-        if c.get('youtubeId') or not r or r['estado'] == 'ninguna' or not r['cand']:
+        if not r or (c.get('youtubeId') and c.get('estado') == 'ok'):
+            continue
+        if r['estado'] == 'ninguna' or not r['cand']:
+            if c.get('estado') != 'ok':
+                c['youtubeId'], c['estado'] = '', 'sin link'
             continue
         c['youtubeId'] = r['cand'][r['i']]['id']
         c['estado'] = 'por verificar'
@@ -189,6 +204,8 @@ def main():
     ap = argparse.ArgumentParser(description='Busca links de YouTube para las canciones sin link.')
     ap.add_argument('--cuantas', type=int, default=0, help='cuántas buscar ahora (0 = todas)')
     ap.add_argument('--no-aplicar', action='store_true', help='no escribir en datos/canciones.json')
+    ap.add_argument('--reintentar', action='store_true',
+                    help='volver a buscar las dudosas y sin resultado con otras palabras («letra», «audio»)')
     args = ap.parse_args()
 
     try:
@@ -202,7 +219,12 @@ def main():
         print(f'No encontré {CANCIONES}')
         sys.exit(1)
     resultados = leer_json(RESULTADOS, {})
-    pendientes = [c for c in datos['canciones'] if not c.get('youtubeId') and c['id'] not in resultados]
+    if args.reintentar:
+        pendientes = [c for c in datos['canciones'] if c['id'] in resultados
+                      and resultados[c['id']]['estado'] in ('ninguna', 'dudosa')
+                      and not resultados[c['id']].get('reintentada')]
+    else:
+        pendientes = [c for c in datos['canciones'] if not c.get('youtubeId') and c['id'] not in resultados]
     if args.cuantas:
         pendientes = pendientes[:args.cuantas]
 
@@ -212,7 +234,13 @@ def main():
     hechas = 0
     try:
         for n, c in enumerate(pendientes, 1):
-            r = procesar(c)
+            if args.reintentar:
+                previa = resultados[c['id']]
+                r = procesar(c, previas=previa['cand'], consultas=[
+                    f"{c['artista']} {c['titulo']} letra", f"{c['titulo']} {c['artista']} audio"])
+                r['reintentada'] = True
+            else:
+                r = procesar(c)
             resultados[c['id']] = r
             guardar_json(RESULTADOS, resultados)
             hechas += 1
@@ -235,7 +263,7 @@ def main():
 
     if not args.no_aplicar and resultados:
         puestas = aplicar(datos, resultados)
-        print(f'✅ {puestas} links nuevos puestos en datos/canciones.json (copia de seguridad: canciones.respaldo.json)')
+        print(f'✅ {puestas} canciones con link en datos/canciones.json (copia de seguridad: canciones.respaldo.json)')
     print('\nSiguiente paso: abra editor/links.html → «📂 Abrir resultados del computador» para revisar las dudosas.\n')
 
 

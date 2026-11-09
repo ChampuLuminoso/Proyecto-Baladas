@@ -16,7 +16,7 @@ Radiola web con baladas de los 60, 70, 80 y 90. Es HTML, CSS y JavaScript puro: 
 | `herramientas/BUSCAR_LINKS.bat` | **Buscador del PC** (Windows): busca todos los links de una vez, sin clave |
 | `herramientas/buscar_links.py` | El programa que usa el .bat (también sirve en Mac) |
 | `js/util.js` | Herramientas pequeñas (tildes, tiempo, mezclar, memoria) |
-| `datos/canciones.json` | Las 622 canciones del Excel de Jorge, ya limpias (sin links todavía) |
+| `datos/canciones.json` | Las 622 canciones del Excel de Jorge, ya limpias (614 con link «por verificar», 8 sin link) |
 
 ## Formato de cada canción
 ```json
@@ -62,6 +62,8 @@ Al terminar:
 - Los links quedan en `datos/canciones.json` como «por verificar» (antes guarda `canciones.respaldo.json`).
 - Para revisar las dudosas: abra `editor/links.html` → **📂 Abrir resultados del computador** →
   elija `herramientas/links_encontrados.json`.
+- Para volver a buscar las 🟠 dudosas y ⚪ sin resultado con otras palabras («letra», «audio»):
+  doble clic en `herramientas/REINTENTAR_DUDOSAS.bat`.
 - Si YouTube pide «confirmar que no es un robot», el programa se detiene solo. Espere una o dos horas y vuelva a abrirlo.
 
 > Nota honesta: las reglas de YouTube solo permiten leer su sitio con programas usando su API oficial
