@@ -2,6 +2,7 @@
 // que no tiene link, propone el mejor video y deja que Jorge lo apruebe.
 // Todo se guarda en este navegador (localStorage) hasta descargar canciones.json.
 import { memoria, normalizar } from '../js/util.js';
+import { leerMarcas, quitarMarca, enviarPendientes, MOTIVOS } from '../js/marcas.js';
 
 const API = 'https://www.googleapis.com/youtube/v3';
 const $ = id => document.getElementById(id);
@@ -36,6 +37,62 @@ async function init() {
   conectar();
   pintarResumen();
   elegirVista();
+  enviarPendientes().finally(pintarMarcas);
+}
+
+// ─────────── 🚩 Canciones reportadas ───────────
+async function pintarMarcas() {
+  const { marcas, compartidas, motivo } = await leerMarcas();
+  $('marcas-estado').textContent = compartidas
+    ? (marcas.size ? `${marcas.size} canciones reportadas desde cualquier equipo.` : 'No hay canciones reportadas. 🎉')
+    : `Por ahora se ven solo las reportadas en este equipo. ${motivo} (Las compartidas funcionan cuando la página está en Vercel con la base de datos conectada.)`;
+  $('marcas').innerHTML = [...marcas.values()].map(m => {
+    const c = canciones.find(x => x.id === m.id);
+    const motivos = Object.entries(m.motivos || {}).map(([k, n]) => `<span class="marca ${k === 'bloqueada' ? 'marca--mala' : ''}">${esc(MOTIVOS[k] || k)}${n > 1 ? ' ×' + n : ''}</span>`).join('');
+    const notas = (m.notas || []).map(n => `<li>«${esc(n.nota)}» <small>${new Date(n.fecha).toLocaleDateString('es-CO')}</small></li>`).join('');
+    return `<li class="fila-rev" data-marca="${m.id}" data-estado="dudosa">
+      <div class="fila-rev__cancion"><strong>${esc(c?.titulo || m.titulo)}</strong><small>${esc(c?.artista || m.artista)}</small>
+        <small>${m.veces} ${m.veces === 1 ? 'reporte' : 'reportes'}${m.ultima ? ' · ' + new Date(m.ultima).toLocaleDateString('es-CO') : ''}${m.soloAqui ? ' · solo en este equipo' : ''}</small></div>
+      <div><div class="marcas">${motivos}</div>${notas ? `<ul class="notas">${notas}</ul>` : ''}</div>
+      <div class="acciones">
+        <button class="boton boton--crema" data-marca-accion="arreglar">🔧 Buscar otro link</button>
+        <button class="boton boton--ok" data-marca-accion="resuelta">✓ Ya está arreglada</button>
+      </div>
+    </li>`;
+  }).join('');
+}
+
+async function accionMarca(e) {
+  const b = e.target.closest('[data-marca-accion]');
+  if (!b) return;
+  const id = b.closest('[data-marca]').dataset.marca;
+  const c = canciones.find(x => x.id === id);
+  if (b.dataset.marcaAccion === 'arreglar') {
+    // La pone en la lista de revisión (con su link actual como primera opción).
+    if (!links[id]) {
+      const yt = c?.youtubeId;
+      links[id] = { cand: yt ? [{ id: yt, titulo: '(link actual)', canal: '', puntos: 0, malas: [] }] : [], i: 0, estado: 'dudosa' };
+    } else if (links[id].estado !== 'ninguna') links[id].estado = 'dudosa';
+    guardarLinks();
+    document.querySelectorAll('[data-ver]').forEach(o => o.setAttribute('aria-pressed', String(o.dataset.ver === 'todas')));
+    ver = 'todas';
+    $('filtro-texto').value = c?.titulo || '';
+    pintarRevision();
+    pintarResumen();
+    $('t-revisar').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  const clave = $('clave-editor').value.trim() || sessionStorage.getItem('djjm.claveEditor') || '';
+  if (!clave) {
+    $('marcas-estado').textContent = 'Escriba la clave del editor (abajo, en «Clave del editor») para marcarla como arreglada.';
+    document.querySelector('#t-marcas ~ details').open = true;
+    $('clave-editor').focus();
+    return;
+  }
+  const r = await quitarMarca(id, clave);
+  if (r.ok) sessionStorage.setItem('djjm.claveEditor', clave);
+  $('marcas-estado').textContent = r.ok ? `✓ «${c?.titulo}» ya no está reportada.` : r.mensaje;
+  if (r.ok) b.closest('[data-marca]').remove();
 }
 
 // Muestra el primer grupo que tenga canciones: dudosas → probables → aprobadas.
@@ -73,6 +130,7 @@ function conectar() {
   $('revision').addEventListener('submit', linkManual);
 
   $('archivo-pc').addEventListener('change', importarDelPC);
+  $('marcas').addEventListener('click', accionMarca);
   $('btn-descargar').addEventListener('click', descargar);
   $('btn-copiar').addEventListener('click', copiar);
   $('previa').addEventListener('close', () => { $('previa-iframe').src = 'about:blank'; });
@@ -151,6 +209,7 @@ async function detalles(ids, conSnippet = false) {
 
 // ─────────── Elegir el mejor video ───────────
 const MALAS = [
+  [/\bft\b|\bfeat\b/, 'con otro cantante'],
   [/karaoke/, 'karaoke'], [/\bcover\b|version de|versión de/, 'cover'], [/instrumental/, 'instrumental'],
   [/tutorial|acordes|chords|como tocar|cómo tocar|piano|guitarra/, 'tutorial'],
   [/reacci|react/, 'reacción'], [/remix/, 'remix'],
@@ -276,7 +335,7 @@ function filaHTML(c) {
       <div>
         <div class="candidata__titulo">${esc(v.titulo)}</div>
         <div class="candidata__info">${esc(v.canal || '')}${v.dur ? ' · ' + reloj(v.dur) : ''}</div>
-        <div class="marcas">${(v.malas || []).map(m => `<span class="marca marca--mala">${esc(m)}</span>`).join('')}</div>
+        <div class="marcas">${(v.buenas || []).map(m => `<span class="marca marca--buena">✓ ${esc(m)}</span>`).join('')}${(v.malas || []).map(m => `<span class="marca marca--mala">${esc(m)}</span>`).join('')}</div>
       </div>
     </div>` : '<p class="ayuda">YouTube no encontró un video que se pueda usar. Pegue un link a mano.</p>';
   return `<li class="fila-rev" data-id="${c.id}" data-estado="${l.estado}">

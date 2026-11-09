@@ -15,6 +15,9 @@ Radiola web con baladas de los 60, 70, 80 y 90. Es HTML, CSS y JavaScript puro: 
 | `editor/links.html` | **Buscador de links** (solo para Jorge): busca en YouTube «artista + canción» |
 | `herramientas/BUSCAR_LINKS.bat` | **Buscador del PC** (Windows): busca todos los links de una vez, sin clave |
 | `herramientas/buscar_links.py` | El programa que usa el .bat (también sirve en Mac) |
+| `herramientas/BUSCAR_EN_ESPANOL.bat` | Busca la **versión en español** de los cantantes italianos, brasileños, franceses… |
+| `api/marcas.js` | Guarda las canciones **reportadas 🚩** en la base de datos (función de Vercel) |
+| `js/marcas.js` | Envía y lee los reportes desde la radiola y el editor |
 | `js/util.js` | Herramientas pequeñas (tildes, tiempo, mezclar, memoria) |
 | `datos/canciones.json` | Las 622 canciones del Excel de Jorge, ya limpias (614 con link «por verificar», 8 sin link) |
 
@@ -99,3 +102,26 @@ descuenta puntos a karaokes, covers, recopilaciones y videos muy cortos o muy la
 - Lo encontrado ya suena en la radiola de **ese mismo navegador**.
 - Para que suene en todos lados: **⬇ Descargar canciones.json** → reemplace `datos/canciones.json`
   en GitHub → Vercel publica solo.
+
+## Versiones en español (herramientas/BUSCAR_EN_ESPANOL.bat)
+Para 62 canciones de cantantes que no son de habla hispana (Roberto Carlos, Umberto Tozzi,
+Laura Pausini, Franco Simone, Joe Dassin, Demis Roussos…) busca «artista + canción **en español**».
+Prefiere los videos que dicen «español», «castellano» o «spanish» y descarta los que parecen de otro idioma.
+Las que no dicen «español» quedan 🟠 dudosas: hay que escucharlas en el editor.
+Doble clic en `BUSCAR_EN_ESPANOL.bat`, luego en el editor «📂 Abrir resultados del computador».
+
+## 🚩 Canciones reportadas (compartidas entre equipos)
+En la radiola, el botón **🚩 Reportar** (junto al nombre de la canción) deja marcar la que suena:
+otra canción, video equivocado, no suena, se oye mal u otra cosa (con un comentario opcional).
+Si YouTube bloquea un video, la radiola lo reporta sola (⛔).
+Jorge las ve en `editor/links.html` → **🚩 Canciones reportadas**: «🔧 Buscar otro link» o «✓ Ya está arreglada».
+
+**Para que se compartan entre todos los equipos** (una sola vez, en Vercel, gratis):
+1. En su proyecto de Vercel → pestaña **Storage** → **Create Database** → **Upstash** → **Redis** → plan **Free** →
+   conéctela al proyecto. Vercel crea solo las variables `KV_REST_API_URL` y `KV_REST_API_TOKEN`.
+2. **Settings → Environment Variables** → agregue `EDITOR_CLAVE` con una clave que solo usted sepa
+   (sirve para marcar canciones como arregladas; nunca llega al navegador).
+3. **Deployments → Redeploy** para que tome los cambios.
+
+Sin la base conectada (o sin internet) todo sigue funcionando: los reportes se guardan en ese equipo
+y se envían solos cuando la base esté disponible.

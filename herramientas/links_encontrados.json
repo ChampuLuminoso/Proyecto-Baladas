@@ -3338,12 +3338,25 @@
  "c072": {
   "cand": [
    {
+    "id": "sSLSZk245gQ",
+    "titulo": "vicky leandros   tu me has hecho sentir en español HD",
+    "canal": "Jhonedisionesfull320",
+    "dur": 253,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "U3O6ikH6Zws",
     "titulo": "Tu Me Has Hecho Sentir",
     "canal": "Vicky Leandros - Topic",
     "dur": 262,
     "puntos": 9,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -3352,15 +3365,9 @@
     "canal": "drupi69",
     "dur": 262,
     "puntos": 7,
-    "malas": []
-   },
-   {
-    "id": "sSLSZk245gQ",
-    "titulo": "vicky leandros   tu me has hecho sentir en español HD",
-    "canal": "Jhonedisionesfull320",
-    "dur": 253,
-    "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "UxqlBn2i11M",
@@ -3368,7 +3375,9 @@
     "canal": "Stiven Love",
     "dur": 257,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "vBeGLqj5L-w",
@@ -3376,12 +3385,14 @@
     "canal": "baladas fabregas",
     "dur": 252,
     "puntos": 4,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:04:02"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c073": {
   "cand": [
@@ -3726,13 +3737,16 @@
  "c080": {
   "cand": [
    {
-    "id": "x39KPRT1BH8",
-    "titulo": "Umberto Tozzi - Tu (Official Audio)",
-    "canal": "Warner Music Italy",
-    "dur": 252,
-    "puntos": 8,
+    "id": "yDD_Ik_8qZI",
+    "titulo": "Umberto Tozzi - Tu (En español)",
+    "canal": "SAMlisten",
+    "dur": 240,
+    "puntos": 11,
     "malas": [],
-    "incrustable": true
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
    },
    {
     "id": "fotaf6QhN4M",
@@ -3740,15 +3754,9 @@
     "canal": "Umberto Tozzi Official",
     "dur": 200,
     "puntos": 8,
-    "malas": []
-   },
-   {
-    "id": "yDD_Ik_8qZI",
-    "titulo": "Umberto Tozzi - Tu (En español)",
-    "canal": "SAMlisten",
-    "dur": 240,
-    "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "vhaeMMM6mvU",
@@ -3756,7 +3764,9 @@
     "canal": "7clouds Italy",
     "dur": 252,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "i3jBdNhPpcI",
@@ -3764,12 +3774,26 @@
     "canal": "VITRUVIUS CHANNEL",
     "dur": 709,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
+   },
+   {
+    "id": "x39KPRT1BH8",
+    "titulo": "Umberto Tozzi - Tu (Official Audio)",
+    "canal": "Warner Music Italy",
+    "dur": 252,
+    "puntos": 4,
+    "malas": [
+     "parece de otro idioma"
+    ],
+    "buenas": [],
+    "incrustable": true
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:04:24"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c081": {
   "cand": [
@@ -5287,21 +5311,26 @@
  "c112": {
   "cand": [
    {
+    "id": "22_dFm9FVNA",
+    "titulo": "TE AMO UMBERTO TOZZI EN ESPAÑOL",
+    "canal": "tetebel46",
+    "dur": 185,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "oQWqG1s0NQ4",
     "titulo": "HUMBERTO TOZZI - TE AMO",
     "canal": "sonidovideosmusical",
     "dur": 243,
     "puntos": 7,
     "malas": [],
+    "buenas": [],
     "incrustable": true
-   },
-   {
-    "id": "22_dFm9FVNA",
-    "titulo": "TE AMO UMBERTO TOZZI EN ESPAÑOL",
-    "canal": "tetebel46",
-    "dur": 185,
-    "puntos": 7,
-    "malas": []
    },
    {
     "id": "sXquvhAFbmU",
@@ -5309,7 +5338,9 @@
     "canal": "Hi im Marce",
     "dur": 243,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "0_JLszFlD90",
@@ -5317,7 +5348,9 @@
     "canal": "Melanchølic Memories",
     "dur": 243,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "M0zhHvs8kwA",
@@ -5325,12 +5358,14 @@
     "canal": "7clouds Italy",
     "dur": 246,
     "puntos": 3,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:05:52"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c113": {
   "cand": [
@@ -7797,12 +7832,25 @@
  "c164": {
   "cand": [
    {
+    "id": "8LVKAeIn2aA",
+    "titulo": "Rutina  -   Roberto Carlos",
+    "canal": "Baladas Español Romanticas, Nostalgia, Recordar.",
+    "dur": 289,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "WpnKvZPkGKs",
     "titulo": "Roberto Carlos - Rutina (Rotina) (Áudio Oficial)",
     "canal": "Roberto Carlos",
     "dur": 294,
     "puntos": 8,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -7811,7 +7859,9 @@
     "canal": "norameli27",
     "dur": 292,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "0Kvzk-nPQ_Q",
@@ -7819,15 +7869,9 @@
     "canal": "Stiven Love",
     "dur": 289,
     "puntos": 7,
-    "malas": []
-   },
-   {
-    "id": "8LVKAeIn2aA",
-    "titulo": "Rutina  -   Roberto Carlos",
-    "canal": "Baladas Español Romanticas, Nostalgia, Recordar.",
-    "dur": 289,
-    "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "w44L_4nuB_I",
@@ -7835,12 +7879,14 @@
     "canal": "Roberto Carlos",
     "dur": 296,
     "puntos": 4,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:08:19"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c165": {
   "cand": [
@@ -7989,15 +8035,6 @@
  "c168": {
   "cand": [
    {
-    "id": "tq5yXuBLF68",
-    "titulo": "RESPIRO FRANCO SIMONE",
-    "canal": "Carlota",
-    "dur": 191,
-    "puntos": 7,
-    "malas": [],
-    "incrustable": true
-   },
-   {
     "id": "xBmeUp_j2xw",
     "titulo": "Franco Simone - Respiro (1981)",
     "canal": "Fansclips",
@@ -8028,10 +8065,21 @@
     "dur": 195,
     "puntos": 7,
     "malas": []
+   },
+   {
+    "id": "tq5yXuBLF68",
+    "titulo": "RESPIRO FRANCO SIMONE",
+    "canal": "Carlota",
+    "dur": 191,
+    "puntos": -50,
+    "malas": [
+     "bloqueado por la disquera (LatinAutor - UMPG)"
+    ],
+    "incrustable": true
    }
   ],
   "i": 0,
-  "estado": "probable",
+  "estado": "dudosa",
   "fecha": "2026-11-08T20:08:31"
  },
  "c169": {
@@ -13637,21 +13685,26 @@
  "c285": {
   "cand": [
    {
+    "id": "OnUGxl4-wwM",
+    "titulo": "Demis Roussos - Morir al lado de mi Amor - Spanish TV",
+    "canal": "Discoloco Spain",
+    "dur": 258,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "NRxpKuftq_Y",
     "titulo": "MORIR AL LADO DE MI AMOR - DEMIS ROUSSOS - SONIDO REMASTERIZADO",
     "canal": "Taberna Momentos Inolvidables",
     "dur": 256,
     "puntos": 7,
     "malas": [],
+    "buenas": [],
     "incrustable": true
-   },
-   {
-    "id": "OnUGxl4-wwM",
-    "titulo": "Demis Roussos - Morir al lado de mi Amor - Spanish TV",
-    "canal": "Discoloco Spain",
-    "dur": 258,
-    "puntos": 7,
-    "malas": []
    },
    {
     "id": "6zMhqqXBWxw",
@@ -13659,7 +13712,9 @@
     "canal": "Demis Roussos",
     "dur": 259,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "pd--3QKeR9w",
@@ -13667,7 +13722,9 @@
     "canal": "NuncaMais",
     "dur": 254,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "HNcm_xNqPMY",
@@ -13675,12 +13732,14 @@
     "canal": "Eddie Rovira Padilla",
     "dur": 264,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:13:52"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c286": {
   "cand": [
@@ -17627,12 +17686,25 @@
  "c367": {
   "cand": [
    {
+    "id": "RgokrgbUKyU",
+    "titulo": "Domenico Modugno La Distancia Es Como El Viento En Español",
+    "canal": "Grandes En Español",
+    "dur": 243,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "8J8pLyDhp84",
     "titulo": "Domenico Modugno - La distancia es como el viento   /letra",
     "canal": "emac",
     "dur": 258,
     "puntos": 7,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -17641,7 +17713,9 @@
     "canal": "Domenico Modugno",
     "dur": 249,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "ozoYfE_2aMI",
@@ -17649,28 +17723,26 @@
     "canal": "Domenico Modugno",
     "dur": 237,
     "puntos": 7,
-    "malas": []
-   },
-   {
-    "id": "RgokrgbUKyU",
-    "titulo": "Domenico Modugno La Distancia Es Como El Viento En Español",
-    "canal": "Grandes En Español",
-    "dur": 243,
-    "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "yzH9sovCp-Q",
     "titulo": "dominico modugno   como has hecho Español",
     "canal": "Jhonedisionesfull320",
     "dur": 269,
-    "puntos": 2,
-    "malas": []
+    "puntos": 6,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:17:38"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c368": {
   "cand": [
@@ -23356,12 +23428,25 @@
  "c487": {
   "cand": [
    {
+    "id": "u7MMtEXCDvs",
+    "titulo": "DONDE ESTARAS CARIÑO MIO original en español.",
+    "canal": "balmoreadolfo",
+    "dur": 173,
+    "puntos": 8,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "I-dsJT82PWQ",
     "titulo": "Ricos y Pobres - Donde estarás",
     "canal": "jose carlos romero ruiz",
     "dur": 171,
     "puntos": 7,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -23370,7 +23455,9 @@
     "canal": "FESTIVALDEVINACHILE",
     "dur": 188,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "AkrlArSOFLA",
@@ -23378,15 +23465,9 @@
     "canal": "PRIVADO 80s",
     "dur": 187,
     "puntos": 4,
-    "malas": []
-   },
-   {
-    "id": "u7MMtEXCDvs",
-    "titulo": "DONDE ESTARAS CARIÑO MIO original en español.",
-    "canal": "balmoreadolfo",
-    "dur": 173,
-    "puntos": 4,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "pU64ABMmzQE",
@@ -23394,12 +23475,14 @@
     "canal": "jaspebas",
     "dur": 177,
     "puntos": 4,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:23:15"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c488": {
   "cand": [
@@ -25071,12 +25154,25 @@
  "c523": {
   "cand": [
    {
+    "id": "3AhLXOAHMg4",
+    "titulo": "Richard Cocciante - Cuerpo sin alma (en español)",
+    "canal": "Gabriella Roda",
+    "dur": 276,
+    "puntos": 10,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "rgw-aFoyOcc",
     "titulo": "Richard Cocciante - Cuerpo Sin Alma (Letra)",
     "canal": "VIEJO LOBO",
     "dur": 272,
     "puntos": 6,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -25085,15 +25181,9 @@
     "canal": "Alberto Costa",
     "dur": 252,
     "puntos": 6,
-    "malas": []
-   },
-   {
-    "id": "3AhLXOAHMg4",
-    "titulo": "Richard Cocciante - Cuerpo sin alma (en español)",
-    "canal": "Gabriella Roda",
-    "dur": 276,
-    "puntos": 6,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "t4R6Z1pyi54",
@@ -25101,7 +25191,9 @@
     "canal": "Simon Martinez Gutierrez",
     "dur": 260,
     "puntos": 6,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "eA525BENJ38",
@@ -25109,12 +25201,14 @@
     "canal": "Jhonedisionesfull320",
     "dur": 258,
     "puntos": 0,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
   "estado": "dudosa",
-  "fecha": "2026-11-08T20:24:54"
+  "fecha": "2026-11-08T20:53:32"
  },
  "c524": {
   "cand": [
@@ -29658,12 +29752,25 @@
  "c619": {
   "cand": [
    {
+    "id": "7VNOGpKDBBI",
+    "titulo": "GIGLIOLA CINQUETTI - A LAS PUERTAS DEL CIELO- en español",
+    "canal": "WhatReddit",
+    "dur": 222,
+    "puntos": 11,
+    "malas": [],
+    "buenas": [
+     "dice «español»"
+    ],
+    "incrustable": null
+   },
+   {
     "id": "aCREd33KArw",
     "titulo": "Gigliola Cinquetti - A Las Puertas del Cielo (Official Audio)",
     "canal": "DavidPozo 2",
     "dur": 221,
     "puntos": 8,
     "malas": [],
+    "buenas": [],
     "incrustable": true
    },
    {
@@ -29672,7 +29779,9 @@
     "canal": "Juan Classic Hispanos",
     "dur": 221,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "-Z5b7s33OdQ",
@@ -29680,7 +29789,9 @@
     "canal": "•confident garcon•",
     "dur": 218,
     "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    },
    {
     "id": "qlDfDa9oYf4",
@@ -29688,20 +29799,14 @@
     "canal": "Álvaro Enrique D Jesus Arias guzman",
     "dur": 213,
     "puntos": 7,
-    "malas": []
-   },
-   {
-    "id": "7VNOGpKDBBI",
-    "titulo": "GIGLIOLA CINQUETTI - A LAS PUERTAS DEL CIELO- en español",
-    "canal": "WhatReddit",
-    "dur": 222,
-    "puntos": 7,
-    "malas": []
+    "malas": [],
+    "buenas": [],
+    "incrustable": null
    }
   ],
   "i": 0,
-  "estado": "probable",
-  "fecha": "2026-11-08T20:29:20"
+  "estado": "dudosa",
+  "fecha": "2026-11-08T20:53:32"
  },
  "c620": {
   "cand": [

@@ -60,6 +60,7 @@
           <h2 id="ahora-titulo" class="ahora__titulo">Elija una canción</h2>
           <p id="ahora-artista" class="ahora__artista">o toque «Sorpréndeme»</p>
         </div>
+        <button id="btn-marcar" class="boton boton--marcar" hidden aria-label="Reportar un problema con esta canción">🚩 Reportar</button>
       </div>
 
       <div class="progreso">
@@ -137,6 +138,29 @@
     <button id="m-siguiente" class="boton boton--redondo" aria-label="Siguiente canción">⏭</button>
     <button id="m-sorpresa" class="boton boton--sorpresa" aria-label="Sorpréndeme">🎲</button>
   </nav>
+
+  <!-- Reportar un problema con la canción -->
+  <dialog id="dlg-marcar" class="dialogo" aria-labelledby="dlg-marcar-titulo">
+    <form method="dialog" id="form-marcar">
+      <h2 id="dlg-marcar-titulo" class="titulo-seccion">¿Qué pasa con esta canción?</h2>
+      <p id="dlg-marcar-cancion" class="dialogo__cancion"></p>
+      <fieldset class="motivos">
+        <legend class="sr">Motivo</legend>
+        <label><input type="radio" name="motivo" value="otra-cancion" required> 🎵 Es otra canción</label>
+        <label><input type="radio" name="motivo" value="video-equivocado"> 📺 El video está mal o es otro cantante</label>
+        <label><input type="radio" name="motivo" value="no-suena"> 🔇 No suena o se corta</label>
+        <label><input type="radio" name="motivo" value="mala-calidad"> 📉 Se oye o se ve mal</label>
+        <label><input type="radio" name="motivo" value="otro"> ✏️ Otra cosa</label>
+      </fieldset>
+      <label class="dialogo__nota">Comentario (si quiere)
+        <textarea name="nota" rows="2" maxlength="300" placeholder="Ej.: suena en portugués"></textarea>
+      </label>
+      <div class="dialogo__botones">
+        <button class="boton boton--sorpresa" value="enviar">🚩 Enviar</button>
+        <button class="boton boton--crema" value="cancelar" formnovalidate>Cancelar</button>
+      </div>
+    </form>
+  </dialog>
 
   <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
 

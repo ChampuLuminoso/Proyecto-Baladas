@@ -46,6 +46,7 @@ progress { width: 100%; height: 18px; accent-color: var(--naranja); }
 .candidata__info { font-size: .9rem; color: var(--tinta-suave); }
 .marcas { display: flex; gap: .3rem; flex-wrap: wrap; margin-top: .2rem; }
 .marca { font-size: .8rem; border-radius: 99px; padding: .05rem .5rem; background: var(--papel); }
+.marca--buena { background: #dcefd9; color: #24502a; }
 .marca--mala { background: #fde2d6; color: #7a2a0c; }
 .acciones { display: flex; flex-wrap: wrap; gap: .4rem; }
 .acciones .boton { min-height: 48px; padding: .4rem .8rem; font-size: .95rem; }
@@ -65,3 +66,6 @@ progress { width: 100%; height: 18px; accent-color: var(--naranja); }
 .campo input { width: 100%; }
 .candidata__titulo { overflow-wrap: anywhere; }
 @media (max-width: 480px) { .candidata { grid-template-columns: 96px 1fr; } .candidata img { width: 96px; } }
+.notas { margin: .4rem 0 0; padding-left: 1.1rem; color: var(--tinta-suave); font-size: .95rem; }
+details.ayuda summary { cursor: pointer; font-weight: 700; color: var(--vino); min-height: 44px; display: flex; align-items: center; }
+.tarjeta code { overflow-wrap: anywhere; word-break: break-word; }

@@ -96,7 +96,22 @@ def solo_letras(t):
     return re.sub(r'[^a-z0-9 ]', '', normalizar(t))
 
 
+# Cantantes italianos, brasileños, franceses, griegos… que grabaron sus éxitos en español.
+# Con --espanol se les busca la versión en español.
+OTRO_IDIOMA = {
+    'Roberto Carlos', 'Nelson Ned', 'Fabio Junior', 'Alexandre Pires', 'Odair José', 'Nilton César',
+    'José Augusto', 'Sergio Méndez', 'Umberto Tozzi', 'Franco Simone', 'Laura Pausini', 'Eros Ramazzotti',
+    'Gianluca Grignani', 'Gianni Bella', 'Gigliola Cinquetti', 'Lucio Battisti', 'Marcella Bella',
+    'Nicola di Bari', 'Paolo Salvatore', 'Pooh', 'Riccardo Cocciante', 'Ricos y Pobres', 'Domenico Modugno',
+    'Raffaella Carrà', 'Adamo', 'Joe Dassin', 'Frédéric François', 'Francis Cabrel', 'Demis Roussos',
+    'Vicky Leandros', 'Lorenzo Toppano', 'Andrea Bocelli y Martha Sánchez', 'Il Divo',
+}
+MARCA_ESPANOL = r'espanol|castellano|spanish|version en espanol|en espanol'
+MARCA_OTRO = (r'italian|italia|\bversione\b|portugues|\bao vivo\b|\bversao\b|\bfrancais\b|'
+              r'warner music italy|sony music italy|\bem portugues\b')
+
 MALAS = [
+    (r'\bft\b|\bfeat\b', 'con otro cantante'),
     (r'karaoke', 'karaoke'), (r'\bcover\b|version de', 'cover'), (r'instrumental', 'instrumental'),
     (r'tutorial|acordes|chords|como tocar|piano|guitarra', 'tutorial'),
     (r'reacci|react', 'reacción'), (r'remix', 'remix'),
@@ -104,11 +119,11 @@ MALAS = [
 ]
 
 
-def puntuar(c, v):
+def puntuar(c, v, espanol=False):
     titulo, canal = normalizar(v['titulo']), normalizar(v['canal'])
     cancion, artista = solo_letras(c['titulo']), solo_letras(c['artista'])
     apellido = ([p for p in artista.split() if len(p) > 3] or [artista])[-1]
-    p, malas = 0, []
+    p, malas, buenas = 0, [], []
     if cancion and cancion in solo_letras(v['titulo']):
         p += 4
     if artista in titulo or artista in canal:
@@ -127,13 +142,21 @@ def puntuar(c, v):
         if re.search(patron, titulo) and not re.search(patron, nombre_cancion):
             p -= 5
             malas.append(nombre)
+    if espanol:
+        texto = titulo + ' ' + canal
+        if re.search(MARCA_ESPANOL, texto):
+            p += 4
+            buenas.append('dice «español»')
+        if re.search(MARCA_OTRO, texto):
+            p -= 4
+            malas.append('parece de otro idioma')
     if v['dur'] and (v['dur'] < 90 or v['dur'] > 12 * 60):
         p -= 4
         malas.append('muy corto' if v['dur'] < 90 else 'muy largo')
-    return {**v, 'puntos': p, 'malas': malas}
+    return {**v, 'puntos': p, 'malas': malas, 'buenas': buenas}
 
 
-def procesar(c, previas=None, consultas=None):
+def procesar(c, previas=None, consultas=None, espanol=False):
     vistos, crudas = set(), []
     for q in consultas or [f"{c['artista']} {c['titulo']}"]:
         for v in buscar(q):
@@ -145,7 +168,7 @@ def procesar(c, previas=None, consultas=None):
         if v['id'] not in vistos and v.get('incrustable') is not False:
             vistos.add(v['id'])
             crudas.append({k: v[k] for k in ('id', 'titulo', 'canal', 'dur')})
-    candidatas = sorted((puntuar(c, v) for v in crudas), key=lambda v: -v['puntos'])
+    candidatas = sorted((puntuar(c, v, espanol) for v in crudas), key=lambda v: -v['puntos'])
     # Revisamos en orden hasta encontrar una que se deje incrustar.
     for v in candidatas:
         ok, motivo = se_puede_incrustar(v['id'])
@@ -159,10 +182,11 @@ def procesar(c, previas=None, consultas=None):
     candidatas = sorted((v for v in candidatas if v['puntos'] > -40), key=lambda v: -v['puntos'])
     if not candidatas:
         estado = 'ninguna'
-    elif candidatas[0]['puntos'] >= 7 and candidatas[0].get('incrustable'):
+    elif candidatas[0]['puntos'] >= 7 and candidatas[0].get('incrustable') and (
+            not espanol or candidatas[0]['buenas']):
         estado = 'probable'
     else:
-        estado = 'dudosa'
+        estado = 'dudosa'   # con --espanol: si no dice «español», Jorge lo escucha para confirmar
     return {'cand': candidatas, 'i': 0, 'estado': estado, 'fecha': datetime.now().isoformat(timespec='seconds')}
 
 
@@ -204,6 +228,8 @@ def main():
     ap = argparse.ArgumentParser(description='Busca links de YouTube para las canciones sin link.')
     ap.add_argument('--cuantas', type=int, default=0, help='cuántas buscar ahora (0 = todas)')
     ap.add_argument('--no-aplicar', action='store_true', help='no escribir en datos/canciones.json')
+    ap.add_argument('--espanol', action='store_true',
+                    help='buscar la versión EN ESPAÑOL de los cantantes italianos, brasileños, franceses…')
     ap.add_argument('--reintentar', action='store_true',
                     help='volver a buscar las dudosas y sin resultado con otras palabras («letra», «audio»)')
     args = ap.parse_args()
@@ -219,7 +245,11 @@ def main():
         print(f'No encontré {CANCIONES}')
         sys.exit(1)
     resultados = leer_json(RESULTADOS, {})
-    if args.reintentar:
+    if args.espanol:
+        pendientes = [c for c in datos['canciones'] if c['artista'] in OTRO_IDIOMA
+                      and not resultados.get(c['id'], {}).get('espanol')
+                      and resultados.get(c['id'], {}).get('estado') != 'ok']
+    elif args.reintentar:
         pendientes = [c for c in datos['canciones'] if c['id'] in resultados
                       and resultados[c['id']]['estado'] in ('ninguna', 'dudosa')
                       and not resultados[c['id']].get('reintentada')]
@@ -234,7 +264,13 @@ def main():
     hechas = 0
     try:
         for n, c in enumerate(pendientes, 1):
-            if args.reintentar:
+            if args.espanol:
+                previa = resultados.get(c['id'], {'cand': []})
+                r = procesar(c, previas=previa['cand'], espanol=True, consultas=[
+                    f"{c['artista']} {c['titulo']} en español",
+                    f"{c['titulo']} {c['artista']} versión en español"])
+                r['espanol'] = True
+            elif args.reintentar:
                 previa = resultados[c['id']]
                 r = procesar(c, previas=previa['cand'], consultas=[
                     f"{c['artista']} {c['titulo']} letra", f"{c['titulo']} {c['artista']} audio"])

@@ -106,7 +106,8 @@ export class Cancionero {
       const separador = c.letra !== letraPrevia ? `<li class="lista__letra" aria-hidden="true">${c.letra}</li>` : '';
       letraPrevia = c.letra;
       const tocable = sePuedeTocar(c);
-      const marca = c.falla ? '<span class="sello sello--falla" title="El video no se pudo reproducir">⚠️ revisar</span>'
+      const marca = this.marcadas?.has(c.id) ? '<span class="sello sello--marcada" title="Reportada: Jorge la revisará">🚩</span>'
+        : c.falla ? '<span class="sello sello--falla" title="El video no se pudo reproducir">⚠️ revisar</span>'
         : !c.youtubeId ? '<span class="sello">sin link</span>'
         : c.estado === 'por verificar' ? '<span class="sello sello--verificar" title="Link por verificar">?</span>' : '';
       return `${separador}<li class="cancion${tocable ? '' : ' cancion--apagada'}${c.id === this.idActual ? ' cancion--actual' : ''}" data-id="${c.id}"${inicio}>

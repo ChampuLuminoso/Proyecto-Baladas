@@ -4,6 +4,7 @@ import { crearReproductor, ESTADO, ERRORES } from './reproductor.js';
 import { Cancionero } from './lista.js';
 import { Cola } from './cola.js';
 import { formatoTiempo, memoria, avisar } from './util.js';
+import { enviarMarca, enviarPendientes, leerMarcas } from './marcas.js';
 
 const $ = id => document.getElementById(id);
 
@@ -50,6 +51,11 @@ async function iniciar() {
   cancionero.dibujar();
   dibujarCola();
   conectarControles();
+  // Reportes: enviar lo que quedó pendiente y mostrar 🚩 en las canciones ya reportadas.
+  enviarPendientes().then(leerMarcas).then(({ marcas }) => {
+    cancionero.marcadas = new Set(marcas.keys());
+    cancionero.dibujar();
+  }).catch(() => {});
   aplicarVolumen(volumen);
   aplicarVista(memoria.leer('vista', 'video'));
 }
@@ -74,6 +80,7 @@ async function tocar(c) {
   document.title = `♪ ${c.titulo} · DJ Jorge Montes`;
   cancionero.marcarActual(c.id);
   dibujarCola();
+  $('btn-marcar').hidden = false;
 
   // Algunos navegadores (iPhone, o la vista previa de Claude) no dejan que la página
   // arranque el video: exigen un toque directo sobre el video. Si no arranca, lo pedimos.
@@ -138,6 +145,11 @@ function fallaDeVideo(codigo) {
   if (!c) return;
   marcarFalla(c, codigo);
   fallasSeguidas++;
+  // Avisa solo a Jorge (sin molestar a quien escucha) que este video no se deja tocar.
+  if (codigo === 100 || codigo === 101 || codigo === 150) {
+    enviarMarca({ id: c.id, motivo: 'bloqueada', nota: `Error ${codigo}`, yt: c.youtubeId, titulo: c.titulo, artista: c.artista })
+      .then(() => { (cancionero.marcadas ??= new Set()).add(c.id); });
+  }
   cancionero.dibujar();
   console.warn(`Video con problema: "${c.titulo}" (${c.youtubeId}) → error ${codigo}: ${ERRORES[codigo] ?? 'desconocido'}`);
   clearTimeout(tocar.revisar);
@@ -218,6 +230,28 @@ function conectarControles() {
   $('btn-sorpresa').addEventListener('click', sorpresa);
   $('m-sorpresa').addEventListener('click', sorpresa);
   $('btn-orden').addEventListener('click', () => { cola.volverAlOrden(); mostrarModo(); avisar('Seguimos en orden A–Z.'); });
+
+  // 🚩 Reportar la canción que suena
+  $('btn-marcar').addEventListener('click', () => {
+    const c = cola.actual;
+    if (!c) return;
+    $('form-marcar').reset();
+    $('dlg-marcar-cancion').textContent = `«${c.titulo}» · ${c.artista}`;
+    $('dlg-marcar').dataset.id = c.id;
+    $('dlg-marcar').showModal();
+  });
+  $('dlg-marcar').addEventListener('close', async () => {
+    const dlg = $('dlg-marcar');
+    if (dlg.returnValue !== 'enviar') return;
+    const c = canciones.find(x => x.id === dlg.dataset.id);
+    const f = new FormData($('form-marcar'));
+    if (!c || !f.get('motivo')) return;
+    const r = await enviarMarca({ id: c.id, motivo: f.get('motivo'), nota: f.get('nota'), yt: c.youtubeId, titulo: c.titulo, artista: c.artista });
+    (cancionero.marcadas ??= new Set()).add(c.id);
+    cancionero.dibujar();
+    avisar(r.compartida ? '🚩 ¡Gracias! Quedó reportada para revisarla.'
+      : '🚩 Quedó guardada en este equipo; se enviará cuando haya conexión.', 6000);
+  });
 
   $('btn-vol-menos').addEventListener('click', () => aplicarVolumen(volumen - 10));
   $('btn-vol-mas').addEventListener('click', () => aplicarVolumen(volumen + 10));
