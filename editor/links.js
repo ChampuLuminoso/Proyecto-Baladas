@@ -41,8 +41,11 @@ async function init() {
 }
 
 // ─────────── 🚩 Canciones reportadas ───────────
+let marcasActuales = new Map();
+
 async function pintarMarcas() {
   const { marcas, compartidas, motivo } = await leerMarcas();
+  marcasActuales = marcas;
   $('marcas-estado').textContent = compartidas
     ? (marcas.size ? `${marcas.size} canciones reportadas desde cualquier equipo.` : 'No hay canciones reportadas. 🎉')
     : `Por ahora se ven solo las reportadas en este equipo. ${motivo} (Las compartidas funcionan cuando la página está en Vercel con la base de datos conectada.)`;
@@ -80,6 +83,13 @@ async function accionMarca(e) {
     pintarRevision();
     pintarResumen();
     $('t-revisar').scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  // Las que están solo en este equipo se quitan aquí mismo, sin clave.
+  if (marcasActuales.get(id)?.soloAqui) {
+    await quitarMarca(id, '');
+    $('marcas-estado').textContent = `✓ «${c?.titulo}» ya no está reportada.`;
+    b.closest('[data-marca]').remove();
     return;
   }
   const clave = $('clave-editor').value.trim() || sessionStorage.getItem('djjm.claveEditor') || '';
