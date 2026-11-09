@@ -228,6 +228,19 @@ function conectarControles() {
   barra.addEventListener('input', () => { $('tiempo-actual').textContent = formatoTiempo(+barra.value); });
   barra.addEventListener('change', () => { reproductor?.irA(+barra.value); arrastrandoProgreso = false; });
 
+  // Pantalla completa (Android y computador; en iPhone se usa el botón ⛶ del propio video).
+  const cajaVideo = document.querySelector('.escenario__video');
+  if (document.fullscreenEnabled && cajaVideo.requestFullscreen) {
+    $('btn-completa').hidden = false;
+    $('btn-completa').addEventListener('click', async () => {
+      aplicarVista('video');
+      try {
+        await cajaVideo.requestFullscreen();
+        await screen.orientation?.lock?.('landscape').catch(() => {});
+      } catch { avisar('Use el botón ⛶ que aparece dentro del video.'); }
+    });
+  }
+
   $('btn-ver-video').addEventListener('click', () => aplicarVista('video'));
   $('btn-solo-musica').addEventListener('click', () => aplicarVista('musica'));
 

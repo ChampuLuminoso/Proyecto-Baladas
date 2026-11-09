@@ -91,22 +91,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (min-width: 768px) {
   body { padding-bottom: 1rem; }
   .barra-pulgar { display: none !important; }
+  /* Tablet: reproductor arriba a lo ancho; cancionero y cola debajo */
   .radiola {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas: "tocadiscos cancionero" "cola cancionero";
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-areas: "tocadiscos tocadiscos" "cancionero cola";
     align-items: start;
-  }
-  .tocadiscos { position: sticky; top: 1rem; }
-}
-
-/* Computador: lista | reproductor | cola */
-@media (min-width: 1200px) {
-  .radiola {
-    grid-template-columns: minmax(300px, 1fr) minmax(0, 1.5fr) minmax(240px, .8fr);
-    grid-template-areas: "cancionero tocadiscos cola";
   }
   .cola { position: sticky; top: 1rem; }
 }
+
 
 /* ─────────── Tocadiscos (el mueble) ─────────── */
 .tocadiscos {
@@ -327,10 +320,6 @@ body.modo-sorpresa #btn-sorpresa { animation: latido 2.4s ease-in-out infinite; 
   font-family: var(--letra-titulo); font-size: 1.25rem; color: var(--vino);
 }
 .letras button:disabled { opacity: .3; cursor: default; }
-@media (min-width: 1200px) {
-  .letras { flex-wrap: wrap; overflow: visible; position: static; }
-  .letras button { flex-basis: 44px; height: 48px; }
-}
 
 .conteo { margin: .3rem 0 .5rem; color: var(--tinta-suave); font-size: .95rem; }
 
@@ -441,5 +430,91 @@ body.modo-sorpresa #btn-sorpresa { animation: latido 2.4s ease-in-out infinite; 
 /* Tablet y computador: el video no crece de más, para que "Sorpréndeme" se vea sin bajar */
 @media (min-width: 768px) {
   .tocadiscos { gap: .75rem; }
-  .escenario[data-vista="video"] .escenario__video { flex: 0 1 400px; width: min(100%, 400px); }
+  .escenario[data-vista="video"] .escenario__video { flex: 0 1 auto; width: min(100%, calc((100vh - 420px) * 16 / 9)); min-width: min(100%, 400px); }
+}
+
+/* ═══════════ Distribución v2 (pedida por Jorge, 08-nov-2026) ═══════════ */
+.vista-fila { display: flex; gap: .6rem; align-items: stretch; }
+.vista-fila .interruptor { flex: 1; }
+.boton--completa { white-space: nowrap; border-radius: 99px; font-size: 1rem; }
+
+/* Pantalla completa: el video ocupa todo, con fondo negro */
+.escenario__video:fullscreen { width: 100vw; height: 100vh; background: #000; display: grid; place-items: center; }
+.escenario__video:fullscreen #yt, .escenario__video:fullscreen iframe { width: 100vw; height: 100vh; border-radius: 0; }
+
+/* ── Celular: el video de borde a borde ── */
+@media (max-width: 767px) {
+  .tocadiscos {
+    margin-inline: -.6rem; border-radius: 0; border-inline: 0; border-top: 0;
+    padding-top: 0; box-shadow: 0 6px 20px rgb(53 13 20 / .25);
+  }
+  .escenario { border-radius: 0; margin-inline: -.7rem; padding: 0; box-shadow: none; }
+  .escenario[data-vista="video"] .escenario__video { width: 100%; }
+  .escenario[data-vista="video"] #yt, .escenario[data-vista="video"] iframe { border-radius: 0; }
+  .escenario[data-vista="musica"] { padding: .6rem; }
+  .vista-fila { flex-direction: column; }
+  .boton--completa { min-height: 52px; }
+}
+
+/* ── Tablet horizontal y computador: controles en filas compactas ── */
+@media (min-width: 1024px) {
+  .tocadiscos {
+    grid-template-columns: auto minmax(0, 1fr) minmax(260px, 340px);
+    grid-template-areas:
+      "escenario escenario escenario"
+      "ahora     ahora     vista"
+      "ahora     ahora     orden"
+      "progreso  progreso  progreso"
+      "controles sorpresa  volumen"
+      "pista     pista     pista";
+    column-gap: 1.2rem; row-gap: .7rem;
+  }
+  .escenario { grid-area: escenario; min-height: 0; }
+  .pista-iphone { grid-area: pista; }
+  .ahora { grid-area: ahora; }
+  .progreso { grid-area: progreso; }
+  .controles { grid-area: controles; gap: .7rem; }
+  #btn-sorpresa { grid-area: sorpresa; align-self: center; }
+  #btn-orden { grid-area: orden; justify-self: center; min-height: 40px; padding: 0; }
+  .volumen { grid-area: volumen; }
+  .vista-fila { grid-area: vista; }
+  .vista-fila .interruptor__op { font-size: .95rem; min-height: 48px; }
+  .boton--completa { padding: .4rem .8rem; font-size: 1.3rem; }
+  .boton--completa .texto-largo { display: none; }
+
+  /* El video crece hasta donde quepa sin tener que bajar la página */
+  .escenario[data-vista="video"] .escenario__video {
+    flex: 0 1 auto;
+    width: min(100%, calc((100vh - 440px) * 16 / 9));
+    min-width: min(100%, 420px);
+  }
+  .escenario[data-vista="musica"] .escenario__disco { max-width: 340px; }
+}
+
+/* ── Computador: video grande + columna derecha con cola y cancionero ── */
+@media (min-width: 1200px) {
+  .radiola {
+    max-width: 1840px;
+    grid-template-columns: minmax(0, 1fr) clamp(360px, 27vw, 470px);
+    grid-template-areas: "tocadiscos cola" "tocadiscos cancionero";
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+  .tocadiscos { position: sticky; top: 1rem; }
+  .cola { position: static; }
+
+  /* Columna derecha */
+  .cola { padding: .8rem 1rem; }
+  .cola .titulo-seccion { font-size: 1.35rem; margin-bottom: .4rem; }
+  .cola__lista { gap: .35rem; }
+  .cola__lista li { padding: .35rem .5rem; }
+  .cola__lista strong { font-size: 1rem; }
+  .cola__lista small { font-size: .9rem; }
+  .cola__num { flex-basis: 1.9rem; height: 1.9rem; font-size: 1rem; }
+  .cancionero { display: flex; flex-direction: column; }
+  .cancionero .titulo-seccion { font-size: 1.35rem; margin-bottom: .4rem; }
+  .decadas, .idiomas { margin: .6rem 0 .5rem; }
+  .letras { flex-wrap: nowrap; overflow-x: auto; position: static; }
+  .letras button { flex: 0 0 44px; height: 44px; }
+  .lista { max-height: calc(100vh - 36rem); min-height: 16rem; }
 }
