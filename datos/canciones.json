@@ -1,6 +1,6 @@
 {
  "version": 2,
- "actualizado": "2026-11-08",
+ "actualizado": "2026-11-09",
  "fuente": "CANCIONES EN ESPAÑOL E INGLES.xlsx",
  "canciones": [
   {
@@ -4140,7 +4140,7 @@
    "idioma": "es",
    "genero": "Balada",
    "youtubeId": "37_wowmc9h8",
-   "estado": "por verificar",
+   "estado": "ok",
    "nota": ""
   },
   {
@@ -4583,8 +4583,8 @@
    "decada": null,
    "idioma": "en",
    "genero": "Balada",
-   "youtubeId": "yRAZx2gvyYw",
-   "estado": "por verificar",
+   "youtubeId": "LtFar8m31qU",
+   "estado": "ok",
    "nota": ""
   },
   {
@@ -6444,7 +6444,7 @@
    "idioma": "es",
    "genero": "Balada",
    "youtubeId": "JHErNDgnSEE",
-   "estado": "por verificar",
+   "estado": "ok",
    "nota": ""
   },
   {
@@ -7332,7 +7332,7 @@
    "idioma": "es",
    "genero": "Balada",
    "youtubeId": "e-9HRqy3j3M",
-   "estado": "por verificar",
+   "estado": "ok",
    "nota": ""
   },
   {
