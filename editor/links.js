@@ -209,7 +209,7 @@ async function detalles(ids, conSnippet = false) {
 
 // ─────────── Elegir el mejor video ───────────
 const MALAS = [
-  [/\bft\b|\bfeat\b/, 'con otro cantante'],
+  [/\bft\b|\bfeat\b|\bwith\b/, 'con otro cantante'],
   [/karaoke/, 'karaoke'], [/\bcover\b|version de|versión de/, 'cover'], [/instrumental/, 'instrumental'],
   [/tutorial|acordes|chords|como tocar|cómo tocar|piano|guitarra/, 'tutorial'],
   [/reacci|react/, 'reacción'], [/remix/, 'remix'],
@@ -229,6 +229,10 @@ function puntuar(c, v, det) {
   if (/ - topic$/.test(canal)) p += 2;          // canal oficial de audio
   if (/vevo|oficial|official/.test(canal + ' ' + titulo)) p += 1;
   if (/en vivo|live/.test(titulo)) { p -= 1; malas.push('en vivo'); }
+  const pos = artista && titulo.includes(artista) ? titulo.indexOf(artista) : (apellido ? titulo.indexOf(apellido) : -1);
+  if (pos > 0 && /[,&]|\sx\s|\sy\s|\sft\b|\sfeat\b/.test(titulo.slice(0, pos)) && !/\sy\s|&/.test(normalizar(c.artista))) {
+    p -= 5; malas.push('dúo o versión nueva');
+  }
   const nombreCancion = normalizar(c.titulo);
   for (const [re, nombre] of MALAS) if (re.test(titulo) && !re.test(nombreCancion)) { p -= 5; malas.push(nombre); }
 

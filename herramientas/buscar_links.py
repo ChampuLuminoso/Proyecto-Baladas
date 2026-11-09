@@ -35,6 +35,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 CANCIONES = RAIZ / 'datos' / 'canciones.json'
 RESPALDO = RAIZ / 'datos' / 'canciones.respaldo.json'
 RESULTADOS = RAIZ / 'herramientas' / 'links_encontrados.json'
+CANDADO = RAIZ / 'herramientas' / 'buscando.candado'
 
 
 # ─────────── Conexión con YouTube (dos funciones pequeñas) ───────────
@@ -111,7 +112,7 @@ MARCA_OTRO = (r'italian|italia|\bversione\b|portugues|\bao vivo\b|\bversao\b|\bf
               r'warner music italy|sony music italy|\bem portugues\b')
 
 MALAS = [
-    (r'\bft\b|\bfeat\b', 'con otro cantante'),
+    (r'\bft\b|\bfeat\b|\bwith\b', 'con otro cantante'),
     (r'karaoke', 'karaoke'), (r'\bcover\b|version de', 'cover'), (r'instrumental', 'instrumental'),
     (r'tutorial|acordes|chords|como tocar|piano|guitarra', 'tutorial'),
     (r'reacci|react', 'reacción'), (r'remix', 'remix'),
@@ -137,6 +138,11 @@ def puntuar(c, v, espanol=False):
     if re.search(r'en vivo|\blive\b', titulo):
         p -= 1
         malas.append('en vivo')
+    # «Carlos Rivera, Roberto Carlos - …» o «Matteo Bocelli & Gianluca Grignani - …»: dúo nuevo, no el original
+    pos = titulo.find(artista) if artista and artista in titulo else (titulo.find(apellido) if apellido else -1)
+    if pos > 0 and re.search(r'[,&]|\sx\s|\sy\s|\sft\b|\sfeat\b', titulo[:pos]) and not re.search(r'\sy\s|&', normalizar(c['artista'])):
+        p -= 5
+        malas.append('dúo o versión nueva')
     nombre_cancion = normalizar(c['titulo'])
     for patron, nombre in MALAS:
         if re.search(patron, titulo) and not re.search(patron, nombre_cancion):
@@ -204,6 +210,15 @@ def guardar_json(ruta, datos, sangria=1):
     tmp.replace(ruta)  # se escribe completo o no se escribe (no queda a medias si se corta)
 
 
+def guardar_una(id_cancion, r):
+    """Guarda SOLO esta canción: vuelve a leer el archivo y le suma el resultado.
+    Así, si hay dos ventanas buscando a la vez, ninguna borra lo de la otra."""
+    todos = leer_json(RESULTADOS, {})
+    todos[id_cancion] = r
+    guardar_json(RESULTADOS, todos)
+    return todos
+
+
 def aplicar(datos, resultados):
     if not RESPALDO.exists():
         shutil.copyfile(CANCIONES, RESPALDO)
@@ -224,7 +239,26 @@ def aplicar(datos, resultados):
     return puestas
 
 
+def tomar_candado():
+    """Evita que dos ventanas trabajen a la vez (se pisarían el archivo de resultados)."""
+    import os
+    if CANDADO.exists() and time.time() - CANDADO.stat().st_mtime < 3 * 3600:
+        print('\n⛔ Ya hay otra ventana del buscador trabajando.')
+        print('   Espere a que termine y vuelva a abrir esta. (Si no hay ninguna abierta,')
+        print(f'   borre el archivo {CANDADO.name} de la carpeta herramientas.)\n')
+        sys.exit(1)
+    CANDADO.write_text(str(os.getpid()))
+
+
 def main():
+    tomar_candado()
+    try:
+        _main()
+    finally:
+        CANDADO.unlink(missing_ok=True)
+
+
+def _main():
     ap = argparse.ArgumentParser(description='Busca links de YouTube para las canciones sin link.')
     ap.add_argument('--cuantas', type=int, default=0, help='cuántas buscar ahora (0 = todas)')
     ap.add_argument('--no-aplicar', action='store_true', help='no escribir en datos/canciones.json')
@@ -277,8 +311,7 @@ def main():
                 r['reintentada'] = True
             else:
                 r = procesar(c)
-            resultados[c['id']] = r
-            guardar_json(RESULTADOS, resultados)
+            resultados = guardar_una(c['id'], r)
             hechas += 1
             icono = {'probable': '🟡', 'dudosa': '🟠', 'ninguna': '⚪'}[r['estado']]
             elegido = r['cand'][0]['titulo'][:55] if r['cand'] else '(sin resultado)'
@@ -298,7 +331,8 @@ def main():
           f'🟠 {cuenta["dudosa"]} dudosas · ⚪ {cuenta["ninguna"]} sin resultado')
 
     if not args.no_aplicar and resultados:
-        puestas = aplicar(datos, resultados)
+        datos = leer_json(CANCIONES, datos)          # lo más reciente, por si otra ventana lo cambió
+        puestas = aplicar(datos, leer_json(RESULTADOS, resultados))
         print(f'✅ {puestas} canciones con link en datos/canciones.json (copia de seguridad: canciones.respaldo.json)')
     print('\nSiguiente paso: abra editor/links.html → «📂 Abrir resultados del computador» para revisar las dudosas.\n')
 

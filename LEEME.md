@@ -125,3 +125,16 @@ Jorge las ve en `editor/links.html` → **🚩 Canciones reportadas**: «🔧 Bu
 
 Sin la base conectada (o sin internet) todo sigue funcionando: los reportes se guardan en ese equipo
 y se envían solos cuando la base esté disponible.
+
+## Publicar en GitHub y Vercel (una sola vez)
+1. **GitHub Desktop** → File → *Add local repository* → elija la carpeta `djbaladas` → *create a repository* →
+   **Create repository** → **Publish repository** (puede dejarlo privado).
+2. **vercel.com** → *Sign up / Continue with GitHub* → **Add New… → Project** → importe `djbaladas`.
+   Project Name: `djjorgemontes` · Framework Preset: **Other** · sin Build Command → **Deploy**.
+   El link queda `https://djjorgemontes.vercel.app` (si el nombre está libre).
+3. Base de datos de los reportes 🚩: pestaña **Storage** → Upstash **Redis** (plan Free) → conectar al proyecto.
+4. **Settings → Environment Variables** → `EDITOR_CLAVE` = su clave → **Deployments → ⋯ → Redeploy**.
+
+### Cada vez que cambie algo
+Reemplace el archivo (por ejemplo `datos/canciones.json`) → GitHub Desktop → escriba un resumen →
+**Commit to main** → **Push origin**. Vercel publica solo en un minuto.
