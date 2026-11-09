@@ -153,9 +153,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .video-falso small { font-size: .8rem; }
 .pista-iphone {
-  position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%);
-  margin: 0; background: var(--dorado-claro); color: var(--tinta); padding: .35rem .8rem; border-radius: 99px;
-  font-size: .9rem; white-space: nowrap; pointer-events: none;
+  justify-self: center; grid-column: 1 / -1;
+  margin: -.3rem 0 0; background: var(--dorado-claro); color: var(--tinta); padding: .35rem .8rem; border-radius: 99px;
+  font-size: 1rem; font-weight: 700; white-space: nowrap; pointer-events: none;
+  box-shadow: 0 4px 14px rgb(0 0 0 / .4); animation: latido 1.6s ease-in-out infinite;
 }
 
 /* ─────────── El disco de vinilo ─────────── */

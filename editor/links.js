@@ -72,6 +72,7 @@ function conectar() {
   $('revision').addEventListener('click', accionFila);
   $('revision').addEventListener('submit', linkManual);
 
+  $('archivo-pc').addEventListener('change', importarDelPC);
   $('btn-descargar').addEventListener('click', descargar);
   $('btn-copiar').addEventListener('click', copiar);
   $('previa').addEventListener('close', () => { $('previa-iframe').src = 'about:blank'; });
@@ -349,6 +350,29 @@ function alertaFila(li, texto) {
   p.textContent = texto;
   li.append(p);
   setTimeout(() => p.remove(), 4000);
+}
+
+// ─────────── Traer lo que encontró el buscador del PC ───────────
+async function importarDelPC(e) {
+  const archivo = e.target.files[0];
+  if (!archivo) return;
+  try {
+    const de_pc = JSON.parse(await archivo.text());
+    let nuevas = 0;
+    for (const [id, r] of Object.entries(de_pc)) {
+      if (!r || !Array.isArray(r.cand)) continue;
+      if (links[id]?.estado === 'ok') continue; // lo que Jorge ya aprobó no se toca
+      links[id] = r;
+      nuevas++;
+    }
+    guardarLinks();
+    pintarResumen();
+    elegirVista();
+    mensaje(`📂 Se trajeron ${nuevas} canciones del computador. Revise las dudosas.`);
+  } catch {
+    mensaje('Ese archivo no es el de resultados (links_encontrados.json).', true);
+  }
+  e.target.value = '';
 }
 
 // ─────────── Guardar / exportar ───────────

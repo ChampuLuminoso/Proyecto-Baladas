@@ -77,7 +77,7 @@ export class Cola {
     const lista = this.obtenerTocables();
     if (!lista.length) return null;
     if (!desde) return lista[0];
-    return lista.find(c => c.orden > desde.orden) ?? lista[0]; // al final, vuelve a la A
+    return lista.find(c => c.orden > desde.orden) ?? lista[0] ?? null; // al final, vuelve a la A
   }
 
   _llenarBolsa(minimo) {
@@ -98,6 +98,8 @@ export class Cola {
 
   _sacarDeBolsa() {
     this._llenarBolsa(1);
-    return this.bolsa.shift() ?? this.actual ?? null;
+    if (this.bolsa.length) return this.bolsa.shift();
+    // Solo queda la que suena: se repite si todavía se puede tocar.
+    return this.actual && this.obtenerTocables().includes(this.actual) ? this.actual : null;
   }
 }

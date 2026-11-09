@@ -56,7 +56,13 @@ async function iniciar() {
 
 // ─────────── Reproducir ───────────
 async function tocar(c) {
-  if (!c) { avisar('No hay canciones para tocar con este filtro.'); return; }
+  if (!c) {
+    const hayConLink = canciones.some(x => x.youtubeId);
+    avisar(hayConLink && !canciones.some(sePuedeTocar)
+      ? 'Ninguna canción con link se deja tocar aquí. Hay que buscarles otro link.'
+      : 'No hay canciones para tocar con este filtro.', 8000);
+    return;
+  }
   reproductor = await promesaReproductor;
   $('aviso-vista-previa').hidden = !reproductor.falso;
   reproductor.volumen(volumen);
@@ -69,15 +75,22 @@ async function tocar(c) {
   cancionero.marcarActual(c.id);
   dibujarCola();
 
-  // En iPhone a veces YouTube exige un toque directo sobre el video.
+  // Algunos navegadores (iPhone, o la vista previa de Claude) no dejan que la página
+  // arranque el video: exigen un toque directo sobre el video. Si no arranca, lo pedimos.
   $('pista-iphone').hidden = true;
   clearTimeout(tocar.revisar);
-  tocar.revisar = setTimeout(() => {
-    if (cola.actual === c && reproductor.estado() !== ESTADO.SONANDO && reproductor.estado() !== ESTADO.PAUSA) {
-      $('pista-iphone').hidden = false;
-      aplicarVista('video');
-    }
-  }, 4000);
+  tocar.revisar = setTimeout(() => revisarSiArranco(c), 3500);
+}
+
+function revisarSiArranco(c) {
+  const e = reproductor?.estado();
+  if (cola.actual === c && !reproductor.falso && (e === -1 || e === ESTADO.LISTO)) pedirToque();
+}
+
+function pedirToque() {
+  aplicarVista('video');
+  $('pista-iphone').hidden = false;
+  avisar('👆 Toque el botón ▶ que aparece dentro del video. Después las demás canciones arrancan solas.', 9000);
 }
 
 function siguiente() { tocar(cola.siguiente()); }
@@ -91,7 +104,9 @@ function anterior() {
 async function playPausa() {
   if (!cola.actual) { tocar(cola.siguiente()); return; }
   reproductor = await promesaReproductor;
-  sonando ? reproductor.pausar() : reproductor.tocar();
+  if (sonando) { reproductor.pausar(); return; }
+  reproductor.tocar();
+  setTimeout(() => revisarSiArranco(cola.actual), 1500);
 }
 
 function sorpresa() {
@@ -125,11 +140,19 @@ function fallaDeVideo(codigo) {
   fallasSeguidas++;
   cancionero.dibujar();
   console.warn(`Video con problema: "${c.titulo}" (${c.youtubeId}) → error ${codigo}: ${ERRORES[codigo] ?? 'desconocido'}`);
-  if (fallasSeguidas >= 5) {
+  clearTimeout(tocar.revisar);
+  $('pista-iphone').hidden = true;
+  if (!canciones.some(sePuedeTocar)) {
+    avisar('Ninguna canción con link se deja tocar aquí. Hay que buscarles otro link.', 9000);
+    return;
+  }
+  if (fallasSeguidas >= 5 && (codigo === 5 || codigo === 2)) {
     avisar('Varias canciones seguidas no se pudieron tocar. Revise la conexión a internet.', 8000);
     return;
   }
-  avisar(`«${c.titulo}» no está disponible. Pasamos a la siguiente…`);
+  const porque = (codigo === 101 || codigo === 150) ? 'la disquera no deja ponerla en otras páginas'
+    : codigo === 100 ? 'el video fue borrado' : 'no está disponible';
+  avisar(`«${c.titulo}»: ${porque}. Pasamos a la siguiente…`);
   setTimeout(siguiente, 1500);
 }
 

@@ -48,6 +48,12 @@
         <button id="btn-buscar" class="boton boton--sorpresa">🔎 Buscar las siguientes</button>
         <button id="btn-parar" class="boton boton--crema" hidden>⏸ Parar</button>
       </div>
+      <div class="fila">
+        <label class="boton boton--crema" for="archivo-pc">📂 Abrir resultados del computador</label>
+        <input id="archivo-pc" type="file" accept=".json,application/json" class="sr">
+      </div>
+      <p class="ayuda">Si usó el buscador del PC (<code>BUSCAR_LINKS.bat</code>), abra aquí el archivo
+        <code>herramientas/links_encontrados.json</code> para revisar lo que encontró.</p>
       <progress id="progreso" max="100" value="0" hidden></progress>
       <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
       <p class="ayuda">Busca <em>«artista + canción»</em>, solo videos que se pueden poner en otras páginas y que se ven en Colombia.

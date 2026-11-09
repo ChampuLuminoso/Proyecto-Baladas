@@ -13,8 +13,10 @@ Radiola web con baladas de los 60, 70, 80 y 90. Es HTML, CSS y JavaScript puro: 
 | `js/lista.js` | Lista A–Z, índice de letras, buscador y décadas |
 | `js/datos.js` | Lee `datos/canciones.json` y recuerda los videos que fallaron |
 | `editor/links.html` | **Buscador de links** (solo para Jorge): busca en YouTube «artista + canción» |
+| `herramientas/BUSCAR_LINKS.bat` | **Buscador del PC** (Windows): busca todos los links de una vez, sin clave |
+| `herramientas/buscar_links.py` | El programa que usa el .bat (también sirve en Mac) |
 | `js/util.js` | Herramientas pequeñas (tildes, tiempo, mezclar, memoria) |
-| `datos/canciones.json` | Las 622 canciones del Excel de Jorge, ya limpias |
+| `datos/canciones.json` | Las 622 canciones del Excel de Jorge, ya limpias (sin links todavía) |
 
 ## Formato de cada canción
 ```json
@@ -44,7 +46,29 @@ El navegador no deja leer `canciones.json` si abre `index.html` con doble clic. 
 ## Teclado
 Espacio = pausa/reproducir · ← anterior · → siguiente.
 
-## Buscador de links (editor/links.html)
+## Buscador del PC (el más rápido) · herramientas/
+Busca «artista + canción» para todas las canciones sin link, **sin clave y sin límite diario**
+(unos 30–40 minutos para las 622). No descarga videos ni audio: solo lee el resultado de la búsqueda.
+
+**Windows**
+1. Instale Python desde https://www.python.org/downloads/ (marque **«Add python.exe to PATH»**).
+2. Doble clic en `herramientas/BUSCAR_LINKS.bat`. La primera vez instala la herramienta yt-dlp.
+3. Déjelo trabajar. Puede cerrarlo cuando quiera: al abrirlo de nuevo sigue donde iba.
+
+**Mac**: en la Terminal, dentro de la carpeta del proyecto:
+`python3 -m pip install -U yt-dlp` y luego `python3 herramientas/buscar_links.py`
+
+Al terminar:
+- Los links quedan en `datos/canciones.json` como «por verificar» (antes guarda `canciones.respaldo.json`).
+- Para revisar las dudosas: abra `editor/links.html` → **📂 Abrir resultados del computador** →
+  elija `herramientas/links_encontrados.json`.
+- Si YouTube pide «confirmar que no es un robot», el programa se detiene solo. Espere una o dos horas y vuelva a abrirlo.
+
+> Nota honesta: las reglas de YouTube solo permiten leer su sitio con programas usando su API oficial
+> (el Buscador de la web, con clave). Este programa va despacio, como una persona, y no descarga nada,
+> pero técnicamente no es la vía oficial. Úselo para esta lista personal y no lo comparta como servicio.
+
+## Buscador de links con clave (editor/links.html)
 Busca en YouTube «artista + canción» para cada canción sin link y propone el mejor video.
 Solo acepta videos que se pueden poner en otras páginas y que se ven en Colombia, y
 descuenta puntos a karaokes, covers, recopilaciones y videos muy cortos o muy largos.
