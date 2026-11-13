@@ -55,6 +55,7 @@ async function pintarMarcas() {
     const notas = (m.notas || []).map(n => `<li>«${esc(n.nota)}» <small>${new Date(n.fecha).toLocaleDateString('es-CO')}</small></li>`).join('');
     return `<li class="fila-rev" data-marca="${m.id}" data-estado="dudosa">
       <div class="fila-rev__cancion"><strong>${esc(c?.titulo || m.titulo)}</strong><small>${esc(c?.artista || m.artista)}</small>
+        ${reporteResuelto(m) ? '<small>✅ ya tiene otro video</small>' : ''}
         <small>${m.veces} ${m.veces === 1 ? 'reporte' : 'reportes'}${m.ultima ? ' · ' + new Date(m.ultima).toLocaleDateString('es-CO') : ''}${m.soloAqui ? ' · solo en este equipo' : ''}</small></div>
       <div><div class="marcas">${motivos}</div>${notas ? `<ul class="notas">${notas}</ul>` : ''}</div>
       <div class="acciones">
@@ -65,6 +66,36 @@ async function pintarMarcas() {
   }).join('');
 }
 
+// 🧹 Un reporte ya está resuelto si el video reportado ya no es ninguno de los de la canción.
+function reporteResuelto(m) {
+  const c = canciones.find(x => x.id === m.id);
+  if (!c || !m.yt) return false;
+  return ![c.youtubeId, ...(c.alternativos || [])].includes(m.yt);
+}
+
+async function limpiarMarcas() {
+  const resueltas = [...marcasActuales.values()].filter(reporteResuelto);
+  if (!resueltas.length) { $('marcas-estado').textContent = 'No hay reportes resueltos para quitar: todas siguen con el mismo video.'; return; }
+  const clave = $('clave-editor').value.trim() || sessionStorage.getItem('djjm.claveEditor') || '';
+  if (!clave && resueltas.some(m => !m.soloAqui)) {
+    $('marcas-estado').textContent = 'Escriba la clave del editor (abajo, en «Clave del editor») y vuelva a tocar 🧹.';
+    document.querySelector('#t-marcas ~ details, #t-marcas ~ * details')?.setAttribute('open', '');
+    $('clave-editor').focus();
+    return;
+  }
+  let quitadas = 0, error = '';
+  for (const m of resueltas) {
+    $('marcas-estado').textContent = `Quitando ${quitadas + 1} de ${resueltas.length}…`;
+    const r = await quitarMarca(m.id, m.soloAqui ? '' : clave);
+    if (r.ok || m.soloAqui) quitadas++;
+    else { error = r.mensaje; if (/clave/i.test(error)) break; }
+  }
+  if (quitadas && !error) sessionStorage.setItem('djjm.claveEditor', clave);
+  await pintarMarcas();
+  $('marcas-estado').textContent = `🧹 Se quitaron ${quitadas} reportes que ya tenían otro video.` + (error ? ` (${error})` : '') +
+    ` Quedan ${marcasActuales.size}.`;
+}
+
 async function accionMarca(e) {
   const b = e.target.closest('[data-marca-accion]');
   if (!b) return;
@@ -72,10 +103,16 @@ async function accionMarca(e) {
   const c = canciones.find(x => x.id === id);
   if (b.dataset.marcaAccion === 'arreglar') {
     // La pone en la lista de revisión (con su link actual como primera opción).
+    // Ofrece el link actual y los de respaldo como opciones.
+    const propios = [c?.youtubeId, ...(c?.alternativos || [])].filter(Boolean)
+      .map((yt, n) => ({ id: yt, titulo: n ? `(respaldo ${n})` : '(link actual)', canal: '', puntos: 0, malas: [] }));
     if (!links[id]) {
-      const yt = c?.youtubeId;
-      links[id] = { cand: yt ? [{ id: yt, titulo: '(link actual)', canal: '', puntos: 0, malas: [] }] : [], i: 0, estado: 'dudosa' };
-    } else if (links[id].estado !== 'ninguna') links[id].estado = 'dudosa';
+      links[id] = { cand: propios, i: 0, estado: 'dudosa' };
+    } else {
+      const ya = new Set(links[id].cand.map(v => v.id));
+      links[id].cand.push(...propios.filter(v => !ya.has(v.id)));
+      if (links[id].estado !== 'ninguna') links[id].estado = 'dudosa';
+    }
     guardarLinks();
     document.querySelectorAll('[data-ver]').forEach(o => o.setAttribute('aria-pressed', String(o.dataset.ver === 'todas')));
     ver = 'todas';
@@ -141,6 +178,7 @@ function conectar() {
 
   $('archivo-pc').addEventListener('change', importarDelPC);
   $('marcas').addEventListener('click', accionMarca);
+  $('btn-limpiar-marcas').addEventListener('click', limpiarMarcas);
   $('btn-descargar').addEventListener('click', descargar);
   $('btn-copiar').addEventListener('click', copiar);
   $('previa').addEventListener('close', () => { $('previa-iframe').src = 'about:blank'; });
@@ -384,7 +422,7 @@ function accionFila(e) {
   }
   if (accion === 'otra') { l.i = (l.i + 1) % l.cand.length; if (l.estado === 'ok') l.estado = 'dudosa'; }
   if (accion === 'ok') l.estado = 'ok';
-  if (accion === 'ninguna') l.estado = 'ninguna';
+  if (accion === 'ninguna') { l.estado = 'ninguna'; l.manual = true; }
   guardarLinks();
   refrescarFila(id);
   pintarResumen();
@@ -458,12 +496,17 @@ function jsonFinal() {
   for (const c of out.canciones) {
     const l = links[c.id];
     if (!l) continue;
-    if (l.estado === 'ninguna' || !l.cand[l.i]) {
-      c.youtubeId = ''; c.estado = 'sin link';
-    } else {
-      c.youtubeId = l.cand[l.i].id;
-      c.estado = l.estado === 'ok' ? 'ok' : 'por verificar';
+    if (l.estado === 'ok' && l.cand[l.i]) {
+      // Aprobado a mano por Jorge: queda de principal; los demás videos siguen de respaldo.
+      const elegido = l.cand[l.i].id;
+      c.alternativos = [c.youtubeId, ...(c.alternativos || [])].filter(v => v && v !== elegido);
+      if (!c.alternativos.length) delete c.alternativos;
+      c.youtubeId = elegido;
+      c.estado = 'ok';
+    } else if (l.estado === 'ninguna' && l.manual) {
+      c.youtubeId = ''; c.estado = 'sin link'; delete c.alternativos;
     }
+    // «probable» y «dudosa» son resultados del buscador que ya están en canciones.json: no se tocan.
   }
   return JSON.stringify(out, null, 1);
 }

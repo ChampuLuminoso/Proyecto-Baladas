@@ -18,18 +18,23 @@ export async function cargarCanciones() {
     .filter(c => c && c.titulo)
     .map(c => {
       const l = links[c.id];
-      const elegido = l && l.estado !== 'ninguna' ? l.cand?.[l.i]?.id : null;
-      const youtubeId = elegido || c.youtubeId;
+      // Solo cuenta lo que Jorge aprobó a mano (✓ o link pegado); lo demás ya está en canciones.json.
+      const elegido = l && l.estado === 'ok' ? l.cand?.[l.i]?.id : null;
+      // Videos de esta canción, en orden: el principal y luego los de respaldo.
+      const videos = [...new Set([elegido, c.youtubeId, ...(c.alternativos || [])].filter(Boolean))];
+      const malos = videosFallados(fallas[c.id]);
+      const usables = videos.filter(v => !malos.has(v));
       const f = fallas[c.id];
       return {
         ...c,
-        youtubeId,
-        estado: elegido ? (l.estado === 'ok' ? 'ok' : 'por verificar') : c.estado,
+        videos,
+        youtubeId: usables[0] || videos[0] || '',
+        estado: elegido ? 'ok' : c.estado,
         decada: c.decada ?? (c.anio ? Math.floor(c.anio / 10) % 10 * 10 : null),
         letra: letraInicial(c.titulo),
         busqueda: normalizar(`${c.titulo} ${c.artista ?? ''}`),
-        // La falla cuenta solo si es del mismo video (si Jorge cambió el link, se vuelve a intentar).
-        falla: f && f.yt === youtubeId ? f.codigo : null,
+        // Falla solo si TODOS sus videos fallaron (si Jorge pone uno nuevo, se vuelve a intentar).
+        falla: videos.length && !usables.length ? (f?.codigo ?? 150) : null,
       };
     })
     .sort((a, b) => comparador.compare(a.titulo, b.titulo) || comparador.compare(a.artista ?? '', b.artista ?? ''));
@@ -41,9 +46,22 @@ export async function cargarCanciones() {
 // ¿Se puede reproducir? Necesita un youtubeId y no haber fallado.
 export const sePuedeTocar = c => !!c.youtubeId && !c.falla;
 
+// Antes se guardaba { codigo, yt }; ahora { codigo, yts: [...] } (todos los videos que fallaron).
+function videosFallados(f) {
+  if (!f) return new Set();
+  return new Set(f.yts || (f.yt ? [f.yt] : []));
+}
+
+// Marca que el video actual falló. Si la canción tiene otro video de respaldo,
+// lo deja listo y lo devuelve; si ya no le queda ninguno, la canción queda con falla.
 export function marcarFalla(cancion, codigo) {
-  cancion.falla = codigo;
   const fallas = memoria.leer('fallas', {});
-  fallas[cancion.id] = { codigo, yt: cancion.youtubeId };
+  const malos = videosFallados(fallas[cancion.id]);
+  malos.add(cancion.youtubeId);
+  fallas[cancion.id] = { codigo, yts: [...malos] };
   memoria.guardar('fallas', fallas);
+  const siguiente = (cancion.videos || []).find(v => !malos.has(v)) || null;
+  if (siguiente) cancion.youtubeId = siguiente;
+  else cancion.falla = codigo;
+  return siguiente;
 }

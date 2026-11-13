@@ -143,15 +143,24 @@ function cambioDeEstado(estado) {
 function fallaDeVideo(codigo) {
   const c = cola.actual;
   if (!c) return;
-  marcarFalla(c, codigo);
+  const videoMalo = c.youtubeId;
+  const respaldo = marcarFalla(c, codigo);
+  console.warn(`Video con problema: "${c.titulo}" (${videoMalo}) → error ${codigo}: ${ERRORES[codigo] ?? 'desconocido'}`);
+  if (respaldo) {
+    // La misma canción tiene otro video: se prueba sin cambiar de canción.
+    avisar(`«${c.titulo}»: probando otra versión…`, 3000);
+    reproductor.cargar(respaldo);
+    clearTimeout(tocar.revisar);
+    tocar.revisar = setTimeout(() => revisarSiArranco(c), 3500);
+    return;
+  }
   fallasSeguidas++;
-  // Avisa solo a Jorge (sin molestar a quien escucha) que este video no se deja tocar.
+  // Ningún video de esta canción se deja tocar: avisa solo a Jorge (sin molestar a quien escucha).
   if (codigo === 100 || codigo === 101 || codigo === 150) {
-    enviarMarca({ id: c.id, motivo: 'bloqueada', nota: `Error ${codigo}`, yt: c.youtubeId, titulo: c.titulo, artista: c.artista })
+    enviarMarca({ id: c.id, motivo: 'bloqueada', nota: `Error ${codigo} · fallaron sus ${c.videos?.length || 1} videos`, yt: videoMalo, titulo: c.titulo, artista: c.artista })
       .then(() => { (cancionero.marcadas ??= new Set()).add(c.id); });
   }
   cancionero.dibujar();
-  console.warn(`Video con problema: "${c.titulo}" (${c.youtubeId}) → error ${codigo}: ${ERRORES[codigo] ?? 'desconocido'}`);
   clearTimeout(tocar.revisar);
   $('pista-iphone').hidden = true;
   if (!canciones.some(sePuedeTocar)) {
